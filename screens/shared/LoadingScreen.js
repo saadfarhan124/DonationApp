@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { StackActions, NavigationActions } from "react-navigation";
+import Firebase from "../../Firebase";
 
 import {
   View,
@@ -21,13 +22,23 @@ const LoadingScreen = (props) => {
 
   //Component did mount
   useEffect(() => {
-    setTimeout(() => {
-      const resetAction = StackActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: "Home" })],
-      });
-      props.navigation.dispatch(resetAction);
-    }, 1000);
+    Firebase.auth().onAuthStateChanged((user) => {
+      var resetActions;
+      if (user == null) {
+        resetActions = StackActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: "Home" })],
+        });
+      } else {
+        resetActions = StackActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: "Helper" })],
+        });
+      }
+      setTimeout(() => {
+        props.navigation.dispatch(resetActions);
+      }, 1000);
+    });
   }, []);
 
   return (

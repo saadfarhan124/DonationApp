@@ -3,7 +3,9 @@ import { createAppContainer } from "react-navigation";
 import LoadingScreen from "../screens/shared/LoadingScreen";
 import MainScreen from "../screens/shared/MainScreenComponent";
 import SignUpWithEmail from "../screens/shared/SignUpWithEmail";
+import BottomNavigator from "../screens/Helper/BottomNavigator";
 import { PINK, GRAY, GREEN } from "../colors";
+import { BottomNavigation } from "react-native-paper";
 
 const screens = {
   Splash: {
@@ -35,6 +37,9 @@ const screens = {
 
       // headerShown: false,
     },
+  },
+  Helper: {
+    screen: BottomNavigator,
   },
 };
 const HomeNavigation = createStackNavigator(screens, {});

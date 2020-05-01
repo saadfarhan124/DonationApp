@@ -6,14 +6,13 @@ import Firebase from "../../Firebase";
 import firebase from "firebase";
 import * as Google from "expo-google-app-auth";
 import User from "../../DataModels/User";
+import { StackActions, NavigationActions } from "react-navigation";
 
 const MainScreen = (props) => {
   useEffect(() => {}, []);
 
   Firebase.auth().onAuthStateChanged(async (user) => {
     if (user != null) {
-      console.log(user.displayName);
-
       // await Firebase.auth().signOut();
       // console.log(user);
     }
@@ -26,13 +25,17 @@ const MainScreen = (props) => {
       const db = Firebase.firestore();
       const docRef = db.collection("users").doc(user.uid);
       const document = await docRef.get();
-      console.log("saad");
       if (!document.exists) {
         await docRef.set(Object.assign({}, userDataModel));
         console.log("success");
       } else {
         console.log("already exists");
       }
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: "Helper" })],
+      });
+      props.navigation.dispatch(resetAction);
     } catch (error) {
       console.log(error);
     }
@@ -56,6 +59,7 @@ const MainScreen = (props) => {
         const { user } = await Firebase.auth().signInWithCredential(credential);
 
         addUserToDB(user);
+        props;
       }
     } catch (error) {
       if (error.code === "auth/account-exists-with-different-credential") {
