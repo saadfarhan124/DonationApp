@@ -1,8 +1,10 @@
 class User {
-  constructor(name, email, role) {
+  constructor(name, email) {
     this.name = name;
     this.email = email;
-    this.role = role;
+    this.isActiveHelper = false;
+    this.isAdmin = false;
+    this.isTrustedHelper = false;
   }
 }
 

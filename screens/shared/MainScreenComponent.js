@@ -21,7 +21,7 @@ const MainScreen = (props) => {
 
   const addUserToDB = async (user) => {
     try {
-      const userDataModel = new User(user.displayName, user.email, "test");
+      const userDataModel = new User(user.displayName, user.email);
       const db = Firebase.firestore();
       const docRef = db.collection("users").doc(user.uid);
       const document = await docRef.get();
@@ -57,7 +57,7 @@ const MainScreen = (props) => {
       if (type === "success") {
         const credential = firebase.auth.FacebookAuthProvider.credential(token);
         const { user } = await Firebase.auth().signInWithCredential(credential);
-
+        console.log(user);
         addUserToDB(user);
         props;
       }

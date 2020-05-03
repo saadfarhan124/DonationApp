@@ -7,6 +7,7 @@ const CustomTextInput = (props) => {
   return (
     <View style={{ padding: "2%" }}>
       <TextInput
+        height={120}
         mode="outlined"
         theme={{
           colors: {
@@ -22,11 +23,18 @@ const CustomTextInput = (props) => {
           props.onChangeText(text);
         }}
         // keyboardType='visible-password'
-        keyboardType={props.keyboardType ? props.keyboardType : "default"}
+        keyboardType={
+          props.keyboardType === "number-pad"
+            ? props.keyboardType
+            : props.keyboardType === "email-address"
+            ? props.keyboardType
+            : "default"
+        }
         underlineColor={GRAY}
         secureTextEntry={props.secureTextEntry ? props.secureTextEntry : false}
         style={styles.textInput}
         dense={true}
+        multiline={props.multiline ? props.multiline : false}
       />
     </View>
   );

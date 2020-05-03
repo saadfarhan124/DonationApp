@@ -5,7 +5,6 @@ import MainScreen from "../screens/shared/MainScreenComponent";
 import SignUpWithEmail from "../screens/shared/SignUpWithEmail";
 import BottomNavigator from "../screens/Helper/BottomNavigator";
 import { PINK, GRAY, GREEN } from "../colors";
-import { BottomNavigation } from "react-native-paper";
 
 const screens = {
   Splash: {
@@ -40,6 +39,9 @@ const screens = {
   },
   Helper: {
     screen: BottomNavigator,
+    navigationOptions: {
+      headerShown: false,
+    },
   },
 };
 const HomeNavigation = createStackNavigator(screens, {});

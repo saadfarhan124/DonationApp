@@ -34,10 +34,11 @@ const LoadingScreen = (props) => {
           index: 0,
           actions: [NavigationActions.navigate({ routeName: "Helper" })],
         });
+        global.user = user;
       }
       setTimeout(() => {
         props.navigation.dispatch(resetActions);
-      }, 1000);
+      }, 3000);
     });
   }, []);
 
