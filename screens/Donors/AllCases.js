@@ -35,8 +35,8 @@ const Dashboard = (props) => {
         });
       });
       setCases(casesArray);
-      setLoaderVisible(false);
     }
+    setLoaderVisible(false);
   };
 
   const donate = (id) => {

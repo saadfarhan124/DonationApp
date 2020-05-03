@@ -6,6 +6,7 @@ class Case {
     this.fullfilledAmount = 0;
     this.userId = userId;
     this.caseStatus = "inactive";
+    this.utilizedAmount = 0;
   }
 }
 export default Case;

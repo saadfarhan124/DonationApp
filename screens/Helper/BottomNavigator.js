@@ -3,6 +3,7 @@ import Profile from "./Profile";
 import NewRequest from "./NewRequest";
 import AllCases from "../Donors/AllCases";
 import CaseDonate from "../Donors/CaseDonate";
+import CaseDetail from "./CaseDetail";
 import TotalCases from "./TotalCases";
 import { NavigationContainer } from "@react-navigation/native";
 import { GREEN } from "../../colors";
@@ -30,6 +31,10 @@ const BottomNavigator = (props) => {
         <HelperStack.Screen
           name="Total Cases"
           component={TotalCases}
+        ></HelperStack.Screen>
+        <HelperStack.Screen
+          name="Case Detail"
+          component={CaseDetail}
         ></HelperStack.Screen>
       </HelperStack.Navigator>
     );

@@ -135,7 +135,7 @@ const MainScreen = (props) => {
         <Button
           color="#dd4b39"
           mode="text"
-          onPress={() => console.log("Pressed")}
+          onPress={() => props.navigation.navigate("Login")}
         >
           Login
         </Button>

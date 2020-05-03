@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { StackActions, NavigationActions } from "react-navigation";
 import {
   Avatar,
@@ -15,6 +15,7 @@ import {
 } from "react-native-paper";
 import { PINK, GREEN, GRAY } from "../../colors";
 import Firebase from "../../Firebase";
+import Dashboard from "../shared/components/Dashboard";
 
 const Profile = (props) => {
   const updateDashboard = async () => {
@@ -33,6 +34,21 @@ const Profile = (props) => {
       .where("userId", "==", global.user.uid)
       .where("caseStatus", "==", "inactive")
       .get();
+
+    //Total Donation
+    const userObj = await Firebase.firestore()
+      .collection("users")
+      .doc(global.user.uid)
+      .get();
+
+    //Total Cases Donated To
+    const totalCasesDonated = await Firebase.firestore()
+      .collection("donations")
+      .where("userId", "==", global.user.uid)
+      .get();
+    setTotalCasesDonatedTo(totalCasesDonated.size);
+
+    setTotalDonationMade(userObj.data().amountDonated);
     setTotalInactiveCases(inactive.size);
     setTotalActiveCases(total.size - inactive.size);
 
@@ -52,6 +68,10 @@ const Profile = (props) => {
   const [totalActiveCases, setTotalActiveCases] = useState(0);
 
   const [loaderVisible, setLoaderVisible] = useState(false);
+
+  // Donation Details
+  const [totalDonationMade, setTotalDonationMade] = useState(0);
+  const [totalCasesDonatedTo, setTotalCasesDonatedTo] = useState(0);
 
   const logout = () => {};
   return (
@@ -92,53 +112,7 @@ const Profile = (props) => {
           </View>
         </View>
       </View>
-      <View style={styles.donationDashboard}>
-        <Card>
-          <Card.Title
-            title="Requests Dashboard"
-            left={(props) => (
-              <Avatar.Icon
-                {...props}
-                icon="folder"
-                color="#ffffff"
-                style={{ backgroundColor: GREEN }}
-              />
-            )}
-          />
-          <Card.Content>
-            <View style={{ marginLeft: "4%" }}>
-              <View style={styles.flexDirectionRow}>
-                <Subheading style={styles.boldFont}>Total Cases: </Subheading>
-                <Subheading>{totalCases}</Subheading>
-              </View>
-              <View style={styles.flexDirectionRow}>
-                <Subheading style={styles.boldFont}>
-                  Total Active Cases:{" "}
-                </Subheading>
-                <Subheading>{totalActiveCases}</Subheading>
-              </View>
-              <View style={styles.flexDirectionRow}>
-                <Subheading style={styles.boldFont}>
-                  Total Inactive Cases:{" "}
-                </Subheading>
-                <Subheading>{totalInactiveCases}</Subheading>
-              </View>
-            </View>
-          </Card.Content>
-          <Card.Actions>
-            <View style={styles.btnDetails}>
-              <Button
-                color={GREEN}
-                onPress={() => {
-                  props.navigation.navigate("Total Cases");
-                }}
-              >
-                Details
-              </Button>
-            </View>
-          </Card.Actions>
-        </Card>
-      </View>
+
       <View style={styles.addButtonContainer}>
         <FAB
           icon="plus"
@@ -172,6 +146,27 @@ const Profile = (props) => {
           </Dialog.Actions>
         </Dialog>
       </Portal>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingBottom: "10%",
+        }}
+      >
+        <Dashboard
+          title="Cases Dashboard"
+          totalCases={totalCases}
+          totalActiveCases={totalActiveCases}
+          totalInactiveCases={totalInactiveCases}
+          navigation={props.navigation}
+          type="case"
+        />
+        <Dashboard
+          title="Donation Dashboard"
+          totalDonationMade={totalDonationMade}
+          totalCasesDonatedTo={totalCasesDonatedTo}
+          type="donation"
+        />
+      </ScrollView>
     </View>
   );
 };

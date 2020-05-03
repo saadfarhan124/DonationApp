@@ -5,6 +5,8 @@ class User {
     this.isActiveHelper = false;
     this.isAdmin = false;
     this.isTrustedHelper = false;
+    this.amountDonated = 0;
+    this.amountUtilized = 0;
   }
 }
 

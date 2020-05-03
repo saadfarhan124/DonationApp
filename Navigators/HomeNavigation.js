@@ -4,6 +4,7 @@ import LoadingScreen from "../screens/shared/LoadingScreen";
 import MainScreen from "../screens/shared/MainScreenComponent";
 import SignUpWithEmail from "../screens/shared/SignUpWithEmail";
 import BottomNavigator from "../screens/Helper/BottomNavigator";
+import Login from "../screens/shared/Login";
 import { PINK, GRAY, GREEN } from "../colors";
 
 const screens = {
@@ -42,6 +43,9 @@ const screens = {
     navigationOptions: {
       headerShown: false,
     },
+  },
+  Login: {
+    screen: Login,
   },
 };
 const HomeNavigation = createStackNavigator(screens, {});

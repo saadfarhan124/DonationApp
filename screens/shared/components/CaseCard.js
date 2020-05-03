@@ -4,14 +4,15 @@ import {
   Avatar,
   Button,
   Card,
-  IconButton,
+  Subheading,
   Paragraph,
+  Divider,
 } from "react-native-paper";
 import { GREEN } from "../../../colors";
 
 const CaseCard = (props) => {
   return (
-    <View>
+    <View style={{ paddingTop: 10 }}>
       <Card>
         <Card.Title
           title={props.name}
@@ -26,24 +27,20 @@ const CaseCard = (props) => {
         />
         <Card.Content>
           <Paragraph>{props.description}</Paragraph>
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingTop: 10,
-            }}
-          >
-            <Text style={styles.boldFont}>Amount Required</Text>
-            <Text style={styles.boldFont}>Amount Collected</Text>
-            <Text style={styles.boldFont}>Amount Remaining</Text>
-          </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text>{props.requiredAmount}</Text>
-            <Text>{props.fullfilledAmount}</Text>
-            <Text>{props.requiredAmount - props.fullfilledAmount}</Text>
+          <Divider style={{ margin: 20 }} />
+          <View style={[styles.flexDirectionRow]}>
+            <View style={{ width: "85%" }}>
+              <Subheading style={styles.boldFont}>Required Amount: </Subheading>
+              <Subheading style={styles.boldFont}>Collected Amount:</Subheading>
+              <Subheading style={styles.boldFont}>Remaining Amount:</Subheading>
+            </View>
+            <View>
+              <Subheading>{props.requiredAmount}</Subheading>
+              <Subheading>{props.fullfilledAmount}</Subheading>
+              <Subheading>
+                {props.requiredAmount - props.fullfilledAmount}
+              </Subheading>
+            </View>
           </View>
         </Card.Content>
 
@@ -74,6 +71,9 @@ const CaseCard = (props) => {
 const styles = StyleSheet.create({
   boldFont: {
     fontWeight: "bold",
+  },
+  flexDirectionRow: {
+    flexDirection: "row",
   },
 });
 

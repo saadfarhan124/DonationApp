@@ -22,7 +22,7 @@ const LoadingScreen = (props) => {
 
   //Component did mount
   useEffect(() => {
-    Firebase.auth().onAuthStateChanged((user) => {
+    Firebase.auth().onAuthStateChanged(async (user) => {
       var resetActions;
       if (user == null) {
         resetActions = StackActions.reset({
@@ -35,6 +35,10 @@ const LoadingScreen = (props) => {
           actions: [NavigationActions.navigate({ routeName: "Helper" })],
         });
         global.user = user;
+        global.userFirebase = await Firebase.firestore()
+          .collection("users")
+          .doc(user.uid)
+          .get();
       }
       setTimeout(() => {
         props.navigation.dispatch(resetActions);

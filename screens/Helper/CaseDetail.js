@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import {
   Title,
   Divider,
@@ -10,68 +10,34 @@ import {
   Dialog,
   Portal,
 } from "react-native-paper";
-import Firebase from "../../Firebase";
-import Donation from "../../DataModels/Donation";
-
 import { GRAY, GREEN } from "../../colors";
+import Firebase from "../../Firebase";
 
-const CaseDonate = (props) => {
-  const [donationAmount, setDonationAmount] = useState("");
-
-  const [buttonState, setButtonState] = useState(true);
-
-  const [loaderVisible, setLoaderVisible] = useState(false);
-
+const CaseDetail = (props) => {
   const [dialogState, setDialogState] = useState(false);
+  const [loaderVisible, setLoaderVisible] = useState(false);
+  const [utilizedAmount, setUtilizedAmount] = useState("");
 
-  const donationOnChange = (donationText) => {
-    setDonationAmount(donationText);
-    if (
-      parseInt(donationText) === 0 ||
-      parseInt(donationText) > props.route.params.requiredAmount ||
-      donationText.length === 0
-    ) {
-      setButtonState(true);
-    } else {
-      setButtonState(false);
-    }
-  };
-
-  const addDonation = async () => {
+  const updateUtilizedAmount = async () => {
     setLoaderVisible(true);
-    props.route.params.fullfilledAmount =
-      parseInt(props.route.params.fullfilledAmount) + parseInt(donationAmount);
-    if (
-      parseInt(props.route.params.fullfilledAmount) >
-      parseInt(props.route.params.requiredAmount)
-    ) {
+    const doc = await Firebase.firestore()
+      .collection("cases")
+      .doc(props.route.params.key)
+      .get();
+    const caseNewAmount =
+      parseInt(doc.data().utilizedAmount) + parseInt(utilizedAmount);
+    if (caseNewAmount > parseInt(props.route.params.fullfilledAmount)) {
+      console.log("saad");
     } else {
-      await Firebase.firestore()
-        .collection("cases")
-        .doc(props.route.params.key)
-        .set(props.route.params);
-      const doc = await Firebase.firestore()
-        .collection("users")
-        .doc(global.user.uid)
-        .get();
-      const newAmount = (doc.data().amountDonated += parseInt(donationAmount));
-
-      await Firebase.firestore()
-        .collection("users")
-        .doc(global.user.uid)
-        .update({ amountDonated: newAmount });
-      setLoaderVisible(false);
-      const donation = new Donation(
-        global.user.uid,
-        props.route.params.key,
-        donationAmount
-      );
-
-      await Firebase.firestore()
-        .collection("donations")
-        .add({ ...donation });
+      await doc.ref.update({ utilizedAmount: caseNewAmount });
+      const userUtilizedAmount = global.userFirebase.data().utilizedAmount;
+      const newUserUtilizedAmount =
+        parseInt(userUtilizedAmount) + parseInt(utilizedAmount);
+      global.userFirebase.ref.update({ amountUtilized: newUserUtilizedAmount });
       props.navigation.pop();
     }
+
+    setLoaderVisible(false);
   };
   return (
     <View style={styles.container}>
@@ -98,6 +64,9 @@ const CaseDonate = (props) => {
               <Text style={[styles.boldFont, { paddingTop: 10 }]}>
                 Remaining Amount
               </Text>
+              <Text style={[styles.boldFont, { paddingTop: 10 }]}>
+                Utilized Amount
+              </Text>
             </View>
             <View>
               <Text style={{ paddingTop: 10, textAlign: "right" }}>
@@ -110,16 +79,20 @@ const CaseDonate = (props) => {
                 {props.route.params.requiredAmount -
                   props.route.params.fullfilledAmount}
               </Text>
+              <Text style={{ paddingTop: 10, textAlign: "right" }}>
+                {props.route.params.utilizedAmount}
+              </Text>
             </View>
           </View>
           <View style={{ flexDirection: "row" }}>
             <Text style={{ flex: 4, alignSelf: "center" }}>
-              Enter amount to Donate
+              Enter amount utilized
             </Text>
             <TextInput
-              value={donationAmount}
               keyboardType="number-pad"
               mode="outlined"
+              value={utilizedAmount}
+              onChangeText={(text) => setUtilizedAmount(text)}
               dense={true}
               style={{ flex: 2 }}
               theme={{
@@ -130,18 +103,16 @@ const CaseDonate = (props) => {
                   background: "#ffffff",
                 },
               }}
-              onChangeText={donationOnChange}
             />
           </View>
           <View>
             <Button
               color={GREEN}
-              disabled={buttonState}
               onPress={() => {
                 setDialogState(true);
               }}
             >
-              <Text>Donate</Text>
+              <Text>Update</Text>
             </Button>
           </View>
         </View>
@@ -151,14 +122,16 @@ const CaseDonate = (props) => {
         <Dialog visible={dialogState} onDismiss={() => setDialogState(false)}>
           <Dialog.Title>Donation App</Dialog.Title>
           <Dialog.Content>
-            <Paragraph>Do you want to make a donation to this case?</Paragraph>
+            <Paragraph>
+              Do you want to update the utlized amount of this case?
+            </Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
             <Button
               color={GREEN}
               onPress={() => {
                 setDialogState(false);
-                addDonation();
+                updateUtilizedAmount();
               }}
             >
               Yes
@@ -172,7 +145,6 @@ const CaseDonate = (props) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   center: {
     alignItems: "center",
@@ -207,4 +179,4 @@ const styles = StyleSheet.create({
     right: 0,
   },
 });
-export default CaseDonate;
+export default CaseDetail;
