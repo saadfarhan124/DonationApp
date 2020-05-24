@@ -5,10 +5,10 @@ import AllCases from "../Donors/AllCases";
 import CaseDonate from "../Donors/CaseDonate";
 import CaseDetail from "./CaseDetail";
 import TotalCases from "./TotalCases";
+import Settings from "./Settings";
 import { NavigationContainer } from "@react-navigation/native";
 import { GREEN } from "../../colors";
 import { createStackNavigator } from "@react-navigation/stack";
-
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -79,6 +79,17 @@ const BottomNavigator = (props) => {
             // tabBarLabel: "Home",
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="home" color={color} size={26} />
+            ),
+          }}
+        />
+
+        <Tab.Screen
+          name="Settings"
+          component={Settings}
+          options={{
+            // tabBarLabel: "Home",
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="settings" color={color} size={26} />
             ),
           }}
         />

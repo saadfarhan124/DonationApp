@@ -25,7 +25,11 @@ const SignUpWithEmail = () => {
 
   const addUserToDB = async (user) => {
     try {
-      const userDataModel = new User(user.displayName, user.email);
+      const userDataModel = new User(
+        user.displayName,
+        user.email,
+        user.photoURL
+      );
       const db = Firebase.firestore();
       const docRef = db.collection("users").doc(user.uid);
       await docRef.set(Object.assign({}, userDataModel));

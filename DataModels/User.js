@@ -1,5 +1,5 @@
 class User {
-  constructor(name, email) {
+  constructor(name, email, photoUri) {
     this.name = name;
     this.email = email;
     this.isActiveHelper = false;
@@ -7,6 +7,7 @@ class User {
     this.isTrustedHelper = false;
     this.amountDonated = 0;
     this.amountUtilized = 0;
+    this.photoUri = photoUri;
   }
 }
 

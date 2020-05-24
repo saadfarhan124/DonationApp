@@ -87,8 +87,9 @@ const Profile = (props) => {
         <Avatar.Image
           size={84}
           source={{
-            uri:
-              "https://buzzwonder.com/wp-content/uploads/2020/04/2020-02-21.jpg",
+            uri: global.user.photoURL
+              ? global.user.photoURL
+              : "https://buzzwonder.com/wp-content/uploads/2020/04/2020-02-21.jpg",
           }}
         />
         <View style={styles.profileDetails}>
@@ -121,6 +122,7 @@ const Profile = (props) => {
           onPress={() => {
             setDialogState(true);
           }}
+          visible={global.userFirebase.data().isActiveHelper}
         />
       </View>
       {/* DIALOG */}
@@ -153,19 +155,21 @@ const Profile = (props) => {
         }}
       >
         <Dashboard
-          title="Cases Dashboard"
-          totalCases={totalCases}
-          totalActiveCases={totalActiveCases}
-          totalInactiveCases={totalInactiveCases}
-          navigation={props.navigation}
-          type="case"
-        />
-        <Dashboard
           title="Donation Dashboard"
           totalDonationMade={totalDonationMade}
           totalCasesDonatedTo={totalCasesDonatedTo}
           type="donation"
         />
+        {global.userFirebase.data().isActiveHelper && (
+          <Dashboard
+            title="Cases Dashboard"
+            totalCases={totalCases}
+            totalActiveCases={totalActiveCases}
+            totalInactiveCases={totalInactiveCases}
+            navigation={props.navigation}
+            type="case"
+          />
+        )}
       </ScrollView>
     </View>
   );

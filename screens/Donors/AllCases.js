@@ -21,7 +21,7 @@ const Dashboard = (props) => {
     setLoaderVisible(true);
     const documents = await Firebase.firestore()
       .collection("cases")
-      .where("caseStatus", "==", "active")
+      .where("caseStatus", "==", "open")
       .get();
     if (documents.size == 0) {
       setNoCasesText(true);

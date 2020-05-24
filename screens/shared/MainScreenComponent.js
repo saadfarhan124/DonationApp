@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { Button, Snackbar } from "react-native-paper";
+import { Button, ActivityIndicator } from "react-native-paper";
 import * as Facebook from "expo-facebook";
 import Firebase from "../../Firebase";
 import firebase from "firebase";
 import * as Google from "expo-google-app-auth";
 import User from "../../DataModels/User";
 import { StackActions, NavigationActions } from "react-navigation";
+import { GREEN } from "../../colors";
 
 const MainScreen = (props) => {
   useEffect(() => {}, []);
+  const [loaderVisible, setLoaderVisible] = useState(false);
 
   Firebase.auth().onAuthStateChanged(async (user) => {
     if (user != null) {
@@ -21,7 +23,7 @@ const MainScreen = (props) => {
 
   const addUserToDB = async (user) => {
     try {
-      const userDataModel = new User(user.displayName, user.email);
+      const userDataModel = new User(user.displayName, user.email, photoURL);
       const db = Firebase.firestore();
       const docRef = db.collection("users").doc(user.uid);
       const document = await docRef.get();
@@ -31,6 +33,11 @@ const MainScreen = (props) => {
       } else {
         console.log("already exists");
       }
+      global.userFirebase = await Firebase.firestore()
+        .collection("users")
+        .doc(user.uid)
+        .get();
+      setLoaderVisible(false);
       const resetAction = StackActions.reset({
         index: 0,
         actions: [NavigationActions.navigate({ routeName: "Helper" })],
@@ -38,11 +45,13 @@ const MainScreen = (props) => {
       props.navigation.dispatch(resetAction);
     } catch (error) {
       console.log(error);
+      setLoaderVisible(false);
     }
   };
 
   //Facebook sign in method
   const loginWithFacebook = async () => {
+    setLoaderVisible(true);
     await Facebook.initializeAsync("156585939119660");
     try {
       const {
@@ -59,9 +68,9 @@ const MainScreen = (props) => {
         const { user } = await Firebase.auth().signInWithCredential(credential);
         console.log(user);
         addUserToDB(user);
-        props;
       }
     } catch (error) {
+      setLoaderVisible(false);
       if (error.code === "auth/account-exists-with-different-credential") {
         const provider = await Firebase.auth().fetchSignInMethodsForEmail(
           error.email
@@ -75,6 +84,7 @@ const MainScreen = (props) => {
 
   //Google Sign In Method
   const loginWithGoogle = async () => {
+    setLoaderVisible(true);
     try {
       const { type, accessToken, idToken, user } = await Google.logInAsync({
         androidClientId:
@@ -89,12 +99,20 @@ const MainScreen = (props) => {
       }
     } catch (error) {
       console.log(error);
+      setLoaderVisible(false);
     }
   };
 
   return (
     //Main Container
     <View style={styles.container}>
+      <View style={styles.loader}>
+        <ActivityIndicator
+          animating={loaderVisible}
+          size="large"
+          color={GREEN}
+        />
+      </View>
       {/* View with each social button inside */}
       <View style={styles.socialButtons}>
         <Button
@@ -170,6 +188,13 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     color: "blue",
+  },
+  loader: {
+    elevation: 8,
+    position: "absolute",
+    top: "50%",
+    left: 0,
+    right: 0,
   },
 });
 

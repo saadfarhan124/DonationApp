@@ -26,6 +26,8 @@ const CaseDetail = (props) => {
       .get();
     const caseNewAmount =
       parseInt(doc.data().utilizedAmount) + parseInt(utilizedAmount);
+    console.log(global.userFirebase.data());
+
     if (caseNewAmount > parseInt(props.route.params.fullfilledAmount)) {
       console.log("saad");
     } else {
@@ -33,7 +35,7 @@ const CaseDetail = (props) => {
       const userUtilizedAmount = global.userFirebase.data().utilizedAmount;
       const newUserUtilizedAmount =
         parseInt(userUtilizedAmount) + parseInt(utilizedAmount);
-      global.userFirebase.ref.update({ amountUtilized: newUserUtilizedAmount });
+      // global.userFirebase.ref.update({ amountUtilized: newUserUtilizedAmount });
       props.navigation.pop();
     }
 

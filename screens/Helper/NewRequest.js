@@ -30,11 +30,15 @@ const NewRequest = (props) => {
       console.log("Please enter all the required fields");
     } else {
       setLoaderVisible(true);
+      const requestStatus = global.userFirebase.data().isTrustedHelper
+        ? "open"
+        : "new";
       const newCase = new Case(
         requestName,
         requestDescription,
         requestAmountRequired,
-        global.user.uid
+        global.user.uid,
+        requestStatus
       );
       const db = Firebase.firestore();
       const results = await db.collection("cases").add({ ...newCase });

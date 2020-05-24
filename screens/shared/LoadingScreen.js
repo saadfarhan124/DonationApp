@@ -30,19 +30,38 @@ const LoadingScreen = (props) => {
           actions: [NavigationActions.navigate({ routeName: "Home" })],
         });
       } else {
-        resetActions = StackActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: "Helper" })],
-        });
         global.user = user;
+
         global.userFirebase = await Firebase.firestore()
           .collection("users")
           .doc(user.uid)
           .get();
+
+        //realtime updates
+        Firebase.firestore()
+          .collection("users")
+          .doc(user.uid)
+          .onSnapshot((doc) => {
+            global.userFirebase = doc;
+            console.log(doc.data());
+          });
+
+        if (global.userFirebase.data().isAdmin) {
+          resetActions = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: "Admin" })],
+          });
+        } else {
+          resetActions = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: "User" })],
+          });
+        }
       }
+
       setTimeout(() => {
         props.navigation.dispatch(resetActions);
-      }, 3000);
+      }, 1000);
     });
   }, []);
 

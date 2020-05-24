@@ -5,6 +5,7 @@ import MainScreen from "../screens/shared/MainScreenComponent";
 import SignUpWithEmail from "../screens/shared/SignUpWithEmail";
 import BottomNavigator from "../screens/Helper/BottomNavigator";
 import Login from "../screens/shared/Login";
+import AdminBottomNavigator from "../screens/Admin/BottomNavigator";
 import { PINK, GRAY, GREEN } from "../colors";
 
 const screens = {
@@ -38,8 +39,14 @@ const screens = {
       // headerShown: false,
     },
   },
-  Helper: {
+  User: {
     screen: BottomNavigator,
+    navigationOptions: {
+      headerShown: false,
+    },
+  },
+  Admin: {
+    screen: AdminBottomNavigator,
     navigationOptions: {
       headerShown: false,
     },
