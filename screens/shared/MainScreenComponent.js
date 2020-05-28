@@ -6,7 +6,7 @@ import Firebase from "../../Firebase";
 import firebase from "firebase";
 import * as Google from "expo-google-app-auth";
 import User from "../../DataModels/User";
-import { StackActions, NavigationActions } from "react-navigation";
+import { StackActions, NavigationActions } from "@react-navigation/native";
 import { GREEN } from "../../colors";
 
 const MainScreen = (props) => {

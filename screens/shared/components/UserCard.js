@@ -40,9 +40,14 @@ const UserCard = (props) => {
     badge: {
       height: 35,
       width: 35,
-      backgroundColor: props.isActiveHelper ? GREEN : "white",
       borderRadius: 400 / 2,
       marginHorizontal: 3,
+    },
+    activeHelperBadge: {
+      backgroundColor: props.isActiveHelper ? GREEN : "white",
+    },
+    trustedHelperBadge: {
+      backgroundColor: props.isTrustedHelper ? GREEN : "white",
     },
   });
   return (
@@ -78,17 +83,20 @@ const UserCard = (props) => {
                   >
                     <Image
                       source={require("../../../assets/icons/become-helper-mini.png")}
-                      style={styles.badge}
+                      style={[styles.badge, styles.activeHelperBadge]}
                     />
                   </TouchableOpacity>
 
                   {/* Trusted Helper Request */}
                   <TouchableOpacity
-                    onPress={props.setTrustedHelper.bind(this, props.id)}
+                    onPress={props.onTrustedHelper.bind(this, {
+                      id: props.id,
+                      isTrusted: props.isTrustedHelper,
+                    })}
                   >
                     <Image
                       source={require("../../../assets/icons/request-mini.png")}
-                      style={styles.badge}
+                      style={[styles.badge, styles.trustedHelperBadge]}
                     />
                   </TouchableOpacity>
                 </View>

@@ -5,7 +5,7 @@ import { View, StyleSheet } from "react-native";
 
 const CustomTextInput = (props) => {
   return (
-    <View style={{ padding: "2%" }}>
+    <View style={[{ padding: "2%" }, props.style]}>
       <TextInput
         height={120}
         mode="outlined"

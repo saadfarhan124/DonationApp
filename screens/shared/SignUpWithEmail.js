@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Button, Text, ActivityIndicator, Checkbox } from "react-native-paper";
+import { Button, Text, ActivityIndicator } from "react-native-paper";
 import { PINK, GREEN, GRAY } from "../../colors";
 import CustomTextInput from "./components/CustomTextInput";
 import Firebase from "../../Firebase";

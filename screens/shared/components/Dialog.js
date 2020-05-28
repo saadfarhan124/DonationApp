@@ -10,10 +10,10 @@ const CustomDialog = (props) => (
         <Paragraph>{props.message}</Paragraph>
       </Dialog.Content>
       <Dialog.Actions>
-        <Button color={GREEN} onPress={() => {}}>
+        <Button color={GREEN} onPress={props.onYes.bind(this)}>
           Yes
         </Button>
-        <Button color={GREEN} onPress={() => console.log("")}>
+        <Button color={GREEN} onPress={() => props.setDialogState(false)}>
           No
         </Button>
       </Dialog.Actions>

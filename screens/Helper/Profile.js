@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { StackActions, NavigationActions } from "react-navigation";
+import { StackActions, NavigationActions } from "@react-navigation/native";
 import {
   Avatar,
   Card,
@@ -124,20 +124,37 @@ const Profile = (props) => {
           }}
           visible={global.userFirebase.data().isActiveHelper}
         />
+        <FAB
+          icon={require("../../assets/icons/become-helper-mini.png")}
+          color="#ffffff"
+          style={{ backgroundColor: GREEN }}
+          onPress={() => {
+            setDialogState(true);
+          }}
+          visible={!global.userFirebase.data().isActiveHelper}
+        />
       </View>
       {/* DIALOG */}
       <Portal>
         <Dialog visible={dialogState} onDismiss={() => setDialogState(false)}>
           <Dialog.Title>Donation App</Dialog.Title>
           <Dialog.Content>
-            <Paragraph>Do you want to create a new case?</Paragraph>
+            <Paragraph>
+              {global.userFirebase.data().isActiveHelper
+                ? "Do you want to create a new case?"
+                : "Do you want to apply to be an active helper?"}
+            </Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
             <Button
               color={GREEN}
               onPress={() => {
                 setDialogState(false);
-                props.navigation.navigate("New Request");
+                if (global.userFirebase.data().isActiveHelper) {
+                  props.navigation.navigate("New Request");
+                } else {
+                  props.navigation.navigate("Helper Application");
+                }
               }}
             >
               Yes

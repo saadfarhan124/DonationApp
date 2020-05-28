@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { StackActions, NavigationActions } from "react-navigation";
+import { CommonActions } from "@react-navigation/native";
 import Firebase from "../../Firebase";
 
 import {
@@ -25,9 +25,9 @@ const LoadingScreen = (props) => {
     Firebase.auth().onAuthStateChanged(async (user) => {
       var resetActions;
       if (user == null) {
-        resetActions = StackActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: "Home" })],
+        resetActions = CommonActions.reset({
+          index: 1,
+          routes: [{ name: "Home" }],
         });
       } else {
         global.user = user;
@@ -47,14 +47,14 @@ const LoadingScreen = (props) => {
           });
 
         if (global.userFirebase.data().isAdmin) {
-          resetActions = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: "Admin" })],
+          resetActions = CommonActions.reset({
+            index: 1,
+            routes: [{ name: "Admin" }],
           });
         } else {
-          resetActions = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: "User" })],
+          resetActions = CommonActions.reset({
+            index: 1,
+            routes: [{ name: "User" }],
           });
         }
       }

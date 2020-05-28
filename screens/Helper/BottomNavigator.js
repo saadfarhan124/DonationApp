@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Profile from "./Profile";
+import HelperApply from "../shared/HelperApply";
 import NewRequest from "./NewRequest";
 import AllCases from "../Donors/AllCases";
 import CaseDonate from "../Donors/CaseDonate";
@@ -36,6 +37,10 @@ const BottomNavigator = (props) => {
           name="Case Detail"
           component={CaseDetail}
         ></HelperStack.Screen>
+        <HelperStack.Screen
+          name="Helper Application"
+          component={HelperApply}
+        ></HelperStack.Screen>
       </HelperStack.Navigator>
     );
   };
@@ -55,46 +60,44 @@ const BottomNavigator = (props) => {
   };
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        barStyle={{ backgroundColor: GREEN }}
-        activeColor="#f0edf6"
-        shifting={true}
-        inactiveColor="#3e2465"
-      >
-        <Tab.Screen
-          name="Profile"
-          component={HelperStackScreen}
-          options={{
-            // tabBarLabel: "Profile",
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="account" color={color} size={26} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Requests"
-          component={DonorStackScreen}
-          options={{
-            // tabBarLabel: "Home",
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="home" color={color} size={26} />
-            ),
-          }}
-        />
+    <Tab.Navigator
+      barStyle={{ backgroundColor: GREEN }}
+      activeColor="#f0edf6"
+      shifting={true}
+      inactiveColor="#3e2465"
+    >
+      <Tab.Screen
+        name="Profile"
+        component={HelperStackScreen}
+        options={{
+          // tabBarLabel: "Profile",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="account" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Requests"
+        component={DonorStackScreen}
+        options={{
+          // tabBarLabel: "Home",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="home" color={color} size={26} />
+          ),
+        }}
+      />
 
-        <Tab.Screen
-          name="Settings"
-          component={Settings}
-          options={{
-            // tabBarLabel: "Home",
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="settings" color={color} size={26} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          // tabBarLabel: "Home",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="settings" color={color} size={26} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 

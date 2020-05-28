@@ -16,6 +16,12 @@ const Users = (props) => {
   const [loaderVisible, setLoaderVisible] = useState(true);
   const [usersList, setUsersList] = useState([]);
 
+  //flag to set update active or trusted
+  const [flag, setFlag] = useState(false);
+
+  //selected user for active or trusted
+  const [selectedUser, setSelectedUser] = useState({});
+
   //dialog
   const [dialogState, setDialogState] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
@@ -35,16 +41,45 @@ const Users = (props) => {
 
   const setActiveHelper = (obj) => {
     setDialogMessage(
-      obj.isActiveHelper
-        ? "Do you want to grant this user The Active Helper Badge?"
-        : "Do you want to remove The Active Helper Badge from the user?"
+      obj.isActive
+        ? "Do you want to remove The Active Helper Badge from the user?"
+        : "Do you want to grant this user The Active Helper Badge?"
     );
+    setSelectedUser(obj);
     setDialogState(true);
-    console.log(obj.id);
+    setFlag(true);
   };
 
-  const setTrustedHelper = (id) => {
-    // console.log(id);
+  const setTrustedHelper = (obj) => {
+    setDialogMessage(
+      obj.isTrusted
+        ? "Do you want to remove The Trusted Helper Badge from the user?"
+        : "Do you want to grant this user The Trusted Helper Badge?"
+    );
+    setSelectedUser(obj);
+    setDialogState(true);
+    setFlag(false);
+  };
+
+  const onDialogYes = async () => {
+    setDialogState(false);
+    setLoaderVisible(true);
+    if (flag) {
+      const updateState = selectedUser.isActive ? false : true;
+      await Firebase.firestore()
+        .collection("users")
+        .doc(selectedUser.id)
+        .update({ isActiveHelper: updateState });
+    } else {
+      const updateState = selectedUser.isTrusted ? false : true;
+
+      await Firebase.firestore()
+        .collection("users")
+        .doc(selectedUser.id)
+        .update({ isTrustedHelper: updateState });
+    }
+    setLoaderVisible(false);
+    await listUsers();
   };
 
   useEffect(() => {
@@ -70,13 +105,19 @@ const Users = (props) => {
             email={item.email}
             id={item.key}
             isActiveHelper={item.isActiveHelper}
+            isTrustedHelper={item.isTrustedHelper}
             onActiveHelper={setActiveHelper}
-            setTrustedHelper={setTrustedHelper}
+            onTrustedHelper={setTrustedHelper}
           />
         )}
         keyExtractor={(item) => item.key}
       />
-      <CustomDialog message={dialogMessage} dialogState={dialogState} />
+      <CustomDialog
+        message={dialogMessage}
+        dialogState={dialogState}
+        setDialogState={setDialogState}
+        onYes={onDialogYes}
+      />
     </View>
   );
 };

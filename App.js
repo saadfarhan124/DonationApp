@@ -5,8 +5,9 @@ import HomeNavigation from "./Navigators/HomeNavigation";
 import Firebase from "./Firebase";
 import "firebase/firestore";
 import { PINK, GREEN, GRAY } from "./colors";
-
+import { NavigationContainer } from "@react-navigation/native";
 import { YellowBox } from "react-native";
+
 import _ from "lodash";
 
 export default function App() {
@@ -22,7 +23,9 @@ export default function App() {
   return (
     <PaperProvider>
       <StatusBar barStyle="light-content" backgroundColor={GREEN} />
-      <HomeNavigation />
+      <NavigationContainer>
+        <HomeNavigation />
+      </NavigationContainer>
     </PaperProvider>
   );
 }
