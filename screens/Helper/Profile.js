@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { StackActions, NavigationActions } from "@react-navigation/native";
+import {
+  View,
+  ToastAndroid,
+  StyleSheet,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import {
   Avatar,
-  Card,
   Title,
-  Subheading,
   Paragraph,
   Button,
   FAB,
   Dialog,
   ActivityIndicator,
   Portal,
+  Divider,
 } from "react-native-paper";
 import { PINK, GREEN, GRAY } from "../../colors";
 import Firebase from "../../Firebase";
@@ -51,14 +57,42 @@ const Profile = (props) => {
     setTotalDonationMade(userObj.data().amountDonated);
     setTotalInactiveCases(inactive.size);
     setTotalActiveCases(total.size - inactive.size);
-
     setLoaderVisible(false);
   };
   useEffect(() => {
+    async function anyNameFunction() {
+      const documents = await Firebase.firestore()
+        .collection("notification")
+        .where("uid", "==", global.user.uid)
+        .where("status", "==", "unseen")
+        .get();
+      if (documents.size > 0) {
+        documents.forEach((document) => {
+          setTimeout(async () => {
+            ToastAndroid.show(document.data().message, ToastAndroid.SHORT);
+            await document.ref.update({ status: "seen" });
+          }, 1000);
+        });
+      }
+    }
+    anyNameFunction();
+
     props.navigation.addListener("focus", async () => {
       await updateDashboard();
     });
+
+    return () => {
+      setDialogState(false);
+      setTotalCases(0);
+      setTotalInactiveCases(0);
+      setTotalActiveCases(0);
+      setLoaderVisible(false);
+      setTotalDonationMade(0);
+      setTotalCasesDonatedTo(0);
+    };
   }, []);
+
+  // useFocusEffect(console.log(props.navigation));
 
   const [dialogState, setDialogState] = useState(false);
 
@@ -73,7 +107,10 @@ const Profile = (props) => {
   const [totalDonationMade, setTotalDonationMade] = useState(0);
   const [totalCasesDonatedTo, setTotalCasesDonatedTo] = useState(0);
 
-  const logout = () => {};
+  const logout = () => {
+    Firebase.auth().signOut();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.loader}>
@@ -103,36 +140,37 @@ const Profile = (props) => {
           >
             <Title>{global.user.displayName}</Title>
             <Paragraph>{global.user.email}</Paragraph>
-            <Button
-              mode="Outlined"
-              color={GREEN}
-              onPress={() => console.log("Logout")}
-            >
+            <Button mode="Outlined" color={GREEN} onPress={logout}>
               Logout
             </Button>
           </View>
         </View>
       </View>
 
+      {/* Donation Collapsible */}
+
       <View style={styles.addButtonContainer}>
-        <FAB
-          icon="plus"
-          color="#ffffff"
-          style={{ backgroundColor: GREEN }}
-          onPress={() => {
-            setDialogState(true);
-          }}
-          visible={global.userFirebase.data().isActiveHelper}
-        />
-        <FAB
-          icon={require("../../assets/icons/become-helper-mini.png")}
-          color="#ffffff"
-          style={{ backgroundColor: GREEN }}
-          onPress={() => {
-            setDialogState(true);
-          }}
-          visible={!global.userFirebase.data().isActiveHelper}
-        />
+        {global.userFirebase.data().isActiveHelper ? (
+          <FAB
+            icon="plus"
+            color="#ffffff"
+            style={{ backgroundColor: GREEN }}
+            onPress={() => {
+              setDialogState(true);
+            }}
+            visible={true}
+          />
+        ) : (
+          <FAB
+            icon={require("../../assets/icons/become-helper-mini.png")}
+            color="#ffffff"
+            style={{ backgroundColor: GREEN }}
+            onPress={() => {
+              setDialogState(true);
+            }}
+            visible={true}
+          />
+        )}
       </View>
       {/* DIALOG */}
       <Portal>
@@ -165,28 +203,30 @@ const Profile = (props) => {
           </Dialog.Actions>
         </Dialog>
       </Portal>
+      <View></View>
       <ScrollView
         contentContainerStyle={{
-          flexGrow: 1,
           paddingBottom: "10%",
+          flexGrow: 1,
         }}
       >
-        <Dashboard
-          title="Donation Dashboard"
-          totalDonationMade={totalDonationMade}
-          totalCasesDonatedTo={totalCasesDonatedTo}
-          type="donation"
-        />
         {global.userFirebase.data().isActiveHelper && (
           <Dashboard
-            title="Cases Dashboard"
+            title="Cases"
+            navigation={props.navigation}
+            type="case"
             totalCases={totalCases}
             totalActiveCases={totalActiveCases}
             totalInactiveCases={totalInactiveCases}
-            navigation={props.navigation}
-            type="case"
           />
         )}
+        <Dashboard
+          title="Donation"
+          navigation={props.navigation}
+          type="donation"
+          totalDonationMade={totalDonationMade}
+          totalCasesDonatedTo={totalCasesDonatedTo}
+        />
       </ScrollView>
     </View>
   );

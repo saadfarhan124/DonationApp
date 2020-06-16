@@ -6,47 +6,28 @@ import Firebase from "../../Firebase";
 import firebase from "firebase";
 import * as Google from "expo-google-app-auth";
 import User from "../../DataModels/User";
-import { StackActions, NavigationActions } from "@react-navigation/native";
+import { CommonActions } from "@react-navigation/native";
 import { GREEN } from "../../colors";
 
 const MainScreen = (props) => {
   useEffect(() => {}, []);
   const [loaderVisible, setLoaderVisible] = useState(false);
 
-  Firebase.auth().onAuthStateChanged(async (user) => {
-    if (user != null) {
-      // await Firebase.auth().signOut();
-      // console.log(user);
-    }
-    // Do other things
-  });
-
   const addUserToDB = async (user) => {
-    try {
-      const userDataModel = new User(user.displayName, user.email, photoURL);
-      const db = Firebase.firestore();
-      const docRef = db.collection("users").doc(user.uid);
-      const document = await docRef.get();
-      if (!document.exists) {
-        await docRef.set(Object.assign({}, userDataModel));
-        console.log("success");
-      } else {
-        console.log("already exists");
-      }
-      global.userFirebase = await Firebase.firestore()
-        .collection("users")
-        .doc(user.uid)
-        .get();
-      setLoaderVisible(false);
-      const resetAction = StackActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: "Helper" })],
-      });
-      props.navigation.dispatch(resetAction);
-    } catch (error) {
-      console.log(error);
-      setLoaderVisible(false);
-    }
+    // try {
+    //   const db = Firebase.firestore();
+    //   if (!document.exists) {
+    //     await docRef.set(Object.assign({}, userDataModel));
+    //     console.log(document.data());
+    //     console.log("success");
+    //   } else {
+    //     console.log("already exists");
+    //   }
+    //   setLoaderVisible(false);
+    // } catch (error) {
+    //   console.log(error);
+    //   setLoaderVisible(false);
+    // }
   };
 
   //Facebook sign in method
@@ -66,7 +47,6 @@ const MainScreen = (props) => {
       if (type === "success") {
         const credential = firebase.auth.FacebookAuthProvider.credential(token);
         const { user } = await Firebase.auth().signInWithCredential(credential);
-        console.log(user);
         addUserToDB(user);
       }
     } catch (error) {

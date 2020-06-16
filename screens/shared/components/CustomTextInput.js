@@ -7,6 +7,7 @@ const CustomTextInput = (props) => {
   return (
     <View style={[{ padding: "2%" }, props.style]}>
       <TextInput
+        onFocus={props.onFocus ? props.onFocus : null}
         height={120}
         mode="outlined"
         theme={{
@@ -17,11 +18,13 @@ const CustomTextInput = (props) => {
             background: "#ffffff",
           },
         }}
+        editable={props.editable ?? props.editable}
         label={props.label}
         value={props.value}
         onChangeText={(text) => {
           props.onChangeText(text);
         }}
+        name={props.name ?? props.name}
         // keyboardType='visible-password'
         keyboardType={
           props.keyboardType === "number-pad"

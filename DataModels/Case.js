@@ -1,12 +1,29 @@
 class Case {
-  constructor(name, description, requiredAmount, userId, caseStatus) {
+  constructor(
+    name,
+    description,
+    requiredAmount,
+    requestType,
+    needyCnic,
+    needyIncome,
+    needyAddress,
+    userId,
+    username
+  ) {
     this.name = name;
     this.description = description;
-    this.requiredAmount = requiredAmount;
-    this.fullfilledAmount = 0;
-    this.userId = userId;
-    this.caseStatus = caseStatus;
+    this.amountRequired = requiredAmount;
+    this.fulfilledAmount = 0;
+    this.commitedAmount = 0;
     this.utilizedAmount = 0;
+    this.requestType = requestType;
+    this.needyCnic = needyCnic;
+    this.needyIncome = needyIncome;
+    this.needyAddress = needyAddress;
+    this.userId = userId;
+    this.caseStatus = "active";
+
+    this.username = username;
   }
 }
 export default Case;

@@ -5,12 +5,43 @@ import { GREEN } from "../../colors";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Dashboard from "./Dashboard";
+import Dashboardd from "./Dashboard";
+import AllRequests from "./AllRequests";
+import HelperRequestDetails from "./HelperRequestDetails";
+import CaseRequestDetails from "./CaseRequestDetails";
 import Users from "./User";
 import Cases from "./Cases";
 
 const AdminBottomNavigator = (props) => {
   const Tab = createMaterialBottomTabNavigator();
+
+  const DashboardNav = createStackNavigator();
+  const DashboardStackScreen = () => {
+    return (
+      <DashboardNav.Navigator>
+        <DashboardNav.Screen
+          name="Dashboard"
+          component={Dashboardd}
+          options={{ headerTitleAlign: "center" }}
+        />
+        <DashboardNav.Screen
+          name="All Requests"
+          component={AllRequests}
+          options={{ headerTitleAlign: "center" }}
+        />
+        <DashboardNav.Screen
+          name="Request Details"
+          component={HelperRequestDetails}
+          options={{ headerTitleAlign: "center" }}
+        />
+        <DashboardNav.Screen
+          name="Case Request Details"
+          component={CaseRequestDetails}
+          options={{ headerTitleAlign: "center" }}
+        />
+      </DashboardNav.Navigator>
+    );
+  };
 
   const UserStack = createStackNavigator();
   const UsersStackScreen = () => {
@@ -44,6 +75,17 @@ const AdminBottomNavigator = (props) => {
       shifting={true}
       inactiveColor="#3e2465"
     >
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardStackScreen}
+        options={{
+          // tabBarLabel: "Profile",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="account" color={color} size={26} />
+          ),
+        }}
+      />
+
       <Tab.Screen
         name="Users"
         component={UsersStackScreen}

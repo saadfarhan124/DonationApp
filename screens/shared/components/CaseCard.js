@@ -1,14 +1,20 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
 import {
   Avatar,
   Button,
   Card,
   Subheading,
   Paragraph,
-  Divider,
+  FAB,
 } from "react-native-paper";
 import { GREEN } from "../../../colors";
+import foodIcon from "../../../assets/icons/cake-pop.png";
+import envIcon from "../../../assets/icons/energy.png";
+import eduIcon from "../../../assets/icons/mortarboard.png";
+import amountRequiredIcon from "../../../assets/icons/request-mini.png";
+import amountFullfilled from "../../../assets/icons/fulfill-mini.png";
+import donate from "../../../assets/icons/Donate.png";
 
 const CaseCard = (props) => {
   return (
@@ -16,31 +22,86 @@ const CaseCard = (props) => {
       <Card>
         <Card.Title
           title={props.name}
-          subtitle="Card Subtitle"
-          left={(props) => <Avatar.Icon {...props} icon="folder" />}
-          right={(rightProps) => (
-            <View style={{ marginRight: 10, flexDirection: "row" }}>
-              <Text style={{ fontWeight: "bold" }}>Status: </Text>
-              <Text>{props.status}</Text>
-            </View>
-          )}
+          left={(leftProps) => {
+            if (props.type === "Education") {
+              return (
+                <Image
+                  style={{ width: 45, height: 45 }}
+                  source={eduIcon}
+                  resizeMethod="resize"
+                />
+              );
+            } else if (props.type === "Food") {
+              return (
+                <Image
+                  style={{ width: 45, height: 45 }}
+                  source={foodIcon}
+                  resizeMethod="resize"
+                />
+              );
+            } else if (props.type == "Environment") {
+              return (
+                <Image
+                  style={{ width: 45, height: 45 }}
+                  source={envIcon}
+                  resizeMethod="resize"
+                />
+              );
+            } else {
+              return (
+                <Image
+                  style={{ width: 45, height: 45 }}
+                  source={foodIcon}
+                  resizeMethod="resize"
+                />
+              );
+            }
+          }}
+          // right={(rightProps) => (
+          //   <View style={{ marginRight: 10, flexDirection: "row" }}>
+          //     <Text style={{ fontWeight: "bold" }}>Status: </Text>
+          //     <Text>{props.status}</Text>
+          //   </View>
+          // )}
         />
         <Card.Content>
           <Paragraph>{props.description}</Paragraph>
-          <Divider style={{ margin: 20 }} />
+
           <View style={[styles.flexDirectionRow]}>
-            <View style={{ width: "85%" }}>
-              <Subheading style={styles.boldFont}>Required Amount: </Subheading>
-              <Subheading style={styles.boldFont}>Collected Amount:</Subheading>
-              <Subheading style={styles.boldFont}>Remaining Amount:</Subheading>
+            <View
+              style={{ justifyContent: "space-between", marginHorizontal: 20 }}
+            >
+              <Image
+                style={{ width: 35, height: 35 }}
+                source={amountRequiredIcon}
+              />
+              <Image
+                style={{ width: 35, height: 35 }}
+                source={amountFullfilled}
+              />
             </View>
-            <View>
-              <Subheading>{props.requiredAmount}</Subheading>
-              <Subheading>{props.fullfilledAmount}</Subheading>
-              <Subheading>
-                {props.requiredAmount - props.fullfilledAmount}
-              </Subheading>
+            <View
+              style={{
+                marginTop: 10,
+                marginLeft: 5,
+                justifyContent: "space-between",
+              }}
+            >
+              <Paragraph style={{}}>Rs 50,000</Paragraph>
+              <Paragraph style={{}}>Rs 50,000</Paragraph>
             </View>
+            {/* <View style={{ flex: 1, alignItems: "flex-end" }}>
+              <TouchableOpacity
+                style={{
+                  width: 100,
+                  height: 100,
+                  backgroundColor: "#fff",
+                  borderRadius: 50,
+                }}
+              >
+                <Image source={donate} style={{ width: 55, height: 55 }} />
+              </TouchableOpacity>
+            </View> */}
           </View>
         </Card.Content>
 

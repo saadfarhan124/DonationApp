@@ -21,7 +21,7 @@ const Dashboard = (props) => {
     setLoaderVisible(true);
     const documents = await Firebase.firestore()
       .collection("cases")
-      .where("caseStatus", "==", "open")
+      .where("caseStatus", "==", "active")
       .get();
     if (documents.size == 0) {
       setNoCasesText(true);
@@ -49,8 +49,15 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     props.navigation.addListener("focus", async () => {
+      console.log("disco");
       await getCases();
     });
+
+    return () => {
+      setCases([]);
+      setNoCasesText(false);
+      setLoaderVisible(false);
+    };
   }, []);
   return (
     <View style={styles.container}>
@@ -70,6 +77,7 @@ const Dashboard = (props) => {
         data={cases}
         renderItem={({ item }) => (
           <CaseCard
+            type={item.requestType}
             name={item.name}
             description={item.description}
             fullfilledAmount={item.fullfilledAmount}

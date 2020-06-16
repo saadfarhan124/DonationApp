@@ -1,15 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { CommonActions } from "@react-navigation/native";
 import Firebase from "../../Firebase";
+import User from "../../DataModels/User";
 
-import {
-  View,
-  StyleSheet,
-  Text,
-  StatusBar,
-  Animated,
-  Easing,
-} from "react-native";
+import { View, StyleSheet, Text, StatusBar, Easing } from "react-native";
 import { PINK, GREEN, GRAY } from "../../colors";
 
 const LoadingScreen = (props) => {
@@ -23,45 +17,97 @@ const LoadingScreen = (props) => {
   //Component did mount
   useEffect(() => {
     Firebase.auth().onAuthStateChanged(async (user) => {
-      var resetActions;
       if (user == null) {
-        resetActions = CommonActions.reset({
+        const resetActions = CommonActions.reset({
           index: 1,
           routes: [{ name: "Home" }],
         });
+        props.navigation.dispatch(resetActions);
       } else {
         global.user = user;
-
-        global.userFirebase = await Firebase.firestore()
-          .collection("users")
-          .doc(user.uid)
-          .get();
-
-        //realtime updates
-        Firebase.firestore()
-          .collection("users")
-          .doc(user.uid)
-          .onSnapshot((doc) => {
-            global.userFirebase = doc;
-            console.log(doc.data());
-          });
-
+        const userDataModel = new User(
+          user.displayName,
+          user.email,
+          user.photoURL
+        );
+        const docRef = Firebase.firestore().collection("users").doc(user.uid);
+        const document = await docRef.get();
+        if (!document.exists) {
+          await docRef.set(Object.assign({}, userDataModel));
+          global.userFirebase = await Firebase.firestore()
+            .collection("users")
+            .doc(user.uid)
+            .get();
+        } else {
+          global.userFirebase = await Firebase.firestore()
+            .collection("users")
+            .doc(user.uid)
+            .get();
+        }
+        var action;
         if (global.userFirebase.data().isAdmin) {
-          resetActions = CommonActions.reset({
+          action = CommonActions.reset({
             index: 1,
             routes: [{ name: "Admin" }],
           });
         } else {
-          resetActions = CommonActions.reset({
+          action = CommonActions.reset({
             index: 1,
             routes: [{ name: "User" }],
           });
         }
+        props.navigation.dispatch(action);
       }
-
-      setTimeout(() => {
-        props.navigation.dispatch(resetActions);
-      }, 1000);
+      // var resetActions;
+      // if (user == null) {
+      //   resetActions = CommonActions.reset({
+      //     index: 1,
+      //     routes: [{ name: "Home" }],
+      //   });
+      // } else {
+      //   const userDataModel = new User(
+      //     user.displayName,
+      //     user.email,
+      //     user.photoURL
+      //   );
+      //   global.user = user;
+      //   const docRef = Firebase.firestore().collection("users").doc(user.uid);
+      //   const document = await docRef.get();
+      //   if (!document.exists) {
+      //     await docRef.set(Object.assign({}, userDataModel));
+      //     global.userFirebase = document;
+      //   } else {
+      //     global.userFirebase = await Firebase.firestore()
+      //       .collection("users")
+      //       .doc(user.uid)
+      //       .get();
+      //   }
+      //   //realtime updates
+      //   Firebase.firestore()
+      //     .collection("users")
+      //     .doc(user.uid)
+      //     .onSnapshot((doc) => {
+      //       global.userFirebase = doc;
+      //     });
+      //   try {
+      //     if (global.userFirebase.data().isAdmin) {
+      //       resetActions = CommonActions.reset({
+      //         index: 1,
+      //         routes: [{ name: "Admin" }],
+      //       });
+      //     } else {
+      //       resetActions = CommonActions.reset({
+      //         index: 1,
+      //         routes: [{ name: "User" }],
+      //       });
+      //     }
+      //     props.navigation.dispatch(resetActions);
+      //   } catch (error) {
+      //     console.log(global.userFirebase.data());
+      //     console.log(error.message);
+      //   }
+      // }
+      // setTimeout(() => {}, 1000);
     });
   }, []);
 
