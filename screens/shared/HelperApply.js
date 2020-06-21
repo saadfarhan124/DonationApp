@@ -7,13 +7,11 @@ import {
   TouchableOpacity,
   Picker,
   ToastAndroid,
-  Image,
 } from "react-native";
 import {
   Button,
   Text,
   ActivityIndicator,
-  Divider,
   RadioButton,
 } from "react-native-paper";
 import CustomTextInput from "./components/CustomTextInput";

@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ToastAndroid,
+  Modal,
+} from "react-native";
 import {
   Title,
   Divider,
@@ -9,69 +16,110 @@ import {
   ActivityIndicator,
   Dialog,
   Portal,
+  Menu,
 } from "react-native-paper";
 import Firebase from "../../Firebase";
 import Donation from "../../DataModels/Donation";
-
+import CalendarPicker from "react-native-calendar-picker";
 import { GRAY, GREEN } from "../../colors";
+import CustomTextInput from "../shared/components/CustomTextInput";
+import Request from "../../DataModels/Request";
+import Transaction from "../../DataModels/Transaction";
+import Notifications from "../../DataModels/Notifications";
 
 const CaseDonate = (props) => {
+  //form fields
   const [donationAmount, setDonationAmount] = useState("");
+  const [reminderDate, setReminderDate] = useState("");
+  const [reminderMode, setReminderMode] = useState("");
 
-  const [buttonState, setButtonState] = useState(true);
-
+  //Loader
   const [loaderVisible, setLoaderVisible] = useState(false);
 
+  //Visible states
   const [dialogState, setDialogState] = useState(false);
 
-  const donationOnChange = (donationText) => {
-    setDonationAmount(donationText);
-    if (
-      parseInt(donationText) === 0 ||
-      parseInt(donationText) > props.route.params.requiredAmount ||
-      donationText.length === 0
-    ) {
-      setButtonState(true);
-    } else {
-      setButtonState(false);
-    }
-  };
+  const [modalFlag, setModalFlag] = useState(false);
+
+  const [menuState, setMenuState] = useState(false);
 
   const addDonation = async () => {
     setLoaderVisible(true);
-    props.route.params.fullfilledAmount =
-      parseInt(props.route.params.fullfilledAmount) + parseInt(donationAmount);
-    if (
-      parseInt(props.route.params.fullfilledAmount) >
-      parseInt(props.route.params.requiredAmount)
-    ) {
-    } else {
-      await Firebase.firestore()
-        .collection("cases")
-        .doc(props.route.params.key)
-        .set(props.route.params);
-      const doc = await Firebase.firestore()
-        .collection("users")
-        .doc(global.user.uid)
-        .get();
-      const newAmount = (doc.data().amountDonated += parseInt(donationAmount));
 
-      await Firebase.firestore()
-        .collection("users")
-        .doc(global.user.uid)
-        .update({ amountDonated: newAmount });
-      setLoaderVisible(false);
-      const donation = new Donation(
-        global.user.uid,
-        props.route.params.key,
-        donationAmount
-      );
+    props.route.params.commitedAmount =
+      parseInt(props.route.params.commitedAmount) + parseInt(donationAmount);
+    await Firebase.firestore()
+      .collection("cases")
+      .doc(props.route.params.key)
+      .set(props.route.params);
 
-      await Firebase.firestore()
-        .collection("donations")
-        .add({ ...donation });
-      props.navigation.pop();
-    }
+    let transaction = new Transaction(
+      donationAmount,
+      props.route.params.key,
+      global.user.uid,
+      { reminderDate, reminderMode }
+    );
+    await Firebase.firestore()
+      .collection("transaction")
+      .add({ ...transaction });
+    let requestData = {
+      transactionData: Object.assign({}, transaction),
+      caseData: props.route.params,
+    };
+    let request = new Request(
+      "Donation",
+      "Pending",
+      { ...requestData },
+      global.user.uid
+    );
+    await Firebase.firestore()
+      .collection("requests")
+      .add({ ...request });
+
+    let notification = new Notifications(
+      global.user.uid,
+      "Pending",
+      `You made a commitment of ${donationAmount}
+    to case ${props.route.params.name}`
+    );
+    await Firebase.firestore()
+      .collection("notification")
+      .add({ ...notification });
+    setLoaderVisible(false);
+
+    props.navigation.pop();
+
+    // if (
+    //   parseInt(props.route.params.fullfilledAmount) >
+    //   parseInt(props.route.params.requiredAmount)
+    // ) {
+    // } else {
+    //   await Firebase.firestore()
+    //     .collection("cases")
+    //     .doc(props.route.params.key)
+    //     .set(props.route.params);
+    //   const doc = await Firebase.firestore()
+    //     .collection("users")
+    //     .doc(global.user.uid)
+    //     .get();
+    //   const newAmount = (doc.data().amountDonated += parseInt(donationAmount));
+
+    //   await Firebase.firestore()
+    //     .collection("users")
+    //     .doc(global.user.uid)
+    //     .update({ amountDonated: newAmount });
+    //   setLoaderVisible(false);
+    //   const donation = new Donation(
+    //     global.user.uid,
+    //     props.route.params.key,
+    //     donationAmount
+    //   );
+
+    //   await Firebase.firestore()
+    //     .collection("donations")
+    //     .add({ ...donation });
+    //   props.navigation.pop();
+    // }
   };
   return (
     <View style={styles.container}>
@@ -81,6 +129,36 @@ const CaseDonate = (props) => {
           size="large"
           color={GREEN}
         />
+      </View>
+      {/* Modal */}
+      <View>
+        <Modal visible={modalFlag} animationType="slide" transparent={true}>
+          <View
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 1)",
+              position: "absolute",
+              top: "30%",
+              borderColor: GREEN,
+              borderWidth: 2,
+            }}
+          >
+            <TouchableOpacity onPress={() => setModalFlag(false)}>
+              <Text style={styles.closeText}>X</Text>
+            </TouchableOpacity>
+            <CalendarPicker
+              onDateChange={(date) => {
+                setReminderDate(
+                  date.toString().split(" ").slice(1, 4).join(" ")
+                );
+                setModalFlag(false);
+              }}
+              initialDate={new Date()}
+              textStyle={{
+                color: GREEN,
+              }}
+            />
+          </View>
+        </Modal>
       </View>
       <View style={styles.card}>
         <View style={styles.cardContent}>
@@ -93,52 +171,98 @@ const CaseDonate = (props) => {
                 Required Amount
               </Text>
               <Text style={[styles.boldFont, { paddingTop: 10 }]}>
-                Fullfilled Amount
+                Commited Amount
               </Text>
               <Text style={[styles.boldFont, { paddingTop: 10 }]}>
-                Remaining Amount
+                Fullfilled Amount
               </Text>
             </View>
             <View>
               <Text style={{ paddingTop: 10, textAlign: "right" }}>
-                {props.route.params.requiredAmount}
+                {props.route.params.amountRequired}
               </Text>
               <Text style={{ paddingTop: 10, textAlign: "right" }}>
-                {props.route.params.fullfilledAmount}
+                {props.route.params.commitedAmount}
               </Text>
               <Text style={{ paddingTop: 10, textAlign: "right" }}>
-                {props.route.params.requiredAmount -
-                  props.route.params.fullfilledAmount}
+                {props.route.params.fulfilledAmount}
               </Text>
             </View>
           </View>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ flex: 4, alignSelf: "center" }}>
-              Enter amount to Donate
-            </Text>
-            <TextInput
-              value={donationAmount}
+          <View style={{ width: "100%" }}>
+            <CustomTextInput
               keyboardType="number-pad"
-              mode="outlined"
-              dense={true}
-              style={{ flex: 2 }}
-              theme={{
-                colors: {
-                  placeholder: GRAY,
-                  text: "black",
-                  primary: GREEN,
-                  background: "#ffffff",
-                },
-              }}
-              onChangeText={donationOnChange}
+              label="Donation Amount"
+              onChangeText={(text) => setDonationAmount(text)}
             />
           </View>
+          <View style={{ width: "100%" }}>
+            <TouchableOpacity onPress={() => setModalFlag(true)}>
+              <CustomTextInput
+                value={reminderDate}
+                editable={false}
+                label="Due Date"
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: "100%" }}>
+            <Menu
+              visible={menuState}
+              onDismiss={() => setMenuState(false)}
+              anchor={
+                <TouchableOpacity onPress={() => setMenuState(true)}>
+                  <CustomTextInput
+                    value={reminderMode}
+                    label="Reminder Type"
+                    editable={false}
+                  />
+                </TouchableOpacity>
+              }
+              contentStyle={{ marginTop: 20, marginHorizontal: 10 }}
+            >
+              <Menu.Item
+                titleStyle={{ fontSize: 15 }}
+                onPress={() => {
+                  setMenuState(false);
+                  setReminderMode("Hourly");
+                }}
+                title="Hourly"
+              />
+              <Menu.Item
+                titleStyle={{ fontSize: 15 }}
+                onPress={() => {
+                  setMenuState(false);
+                  setReminderMode("Daily");
+                }}
+                title="Daily"
+              />
+              <Menu.Item
+                titleStyle={{ fontSize: 15 }}
+                onPress={() => {
+                  setMenuState(false);
+                  setReminderMode("Weekly");
+                }}
+                title="Weekly"
+              />
+            </Menu>
+          </View>
+
           <View>
             <Button
               color={GREEN}
-              disabled={buttonState}
               onPress={() => {
-                setDialogState(true);
+                if (
+                  donationAmount.length == 0 ||
+                  reminderMode.length == 0 ||
+                  reminderDate.length === 0
+                ) {
+                  ToastAndroid.show(
+                    "Please fill all the fields first",
+                    ToastAndroid.SHORT
+                  );
+                } else {
+                  setDialogState(true);
+                }
               }}
             >
               <Text>Donate</Text>
@@ -205,6 +329,18 @@ const styles = StyleSheet.create({
     top: "50%",
     left: 0,
     right: 0,
+  },
+  closeText: {
+    marginHorizontal: 5,
+    backgroundColor: GREEN,
+    color: "white",
+    borderRadius: 20,
+    width: 32,
+    padding: 6,
+    alignSelf: "flex-end",
+    textAlign: "center",
+    borderWidth: 1,
+    borderColor: "white",
   },
 });
 export default CaseDonate;

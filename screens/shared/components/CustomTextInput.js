@@ -8,7 +8,7 @@ const CustomTextInput = (props) => {
     <View style={[{ padding: "2%" }, props.style]}>
       <TextInput
         onFocus={props.onFocus ? props.onFocus : null}
-        height={120}
+        height={props.height ? props.height : 120}
         mode="outlined"
         theme={{
           colors: {

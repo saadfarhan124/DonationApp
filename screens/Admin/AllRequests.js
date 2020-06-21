@@ -38,7 +38,7 @@ const AllRequests = (props) => {
         "Case Request Details",
         requestList.find((c) => c.key === obj.id)
       );
-    } else {
+    } else if (obj.type == "Helper Application") {
       props.navigation.navigate(
         "Request Details",
         requestList.find((c) => c.key === obj.id)

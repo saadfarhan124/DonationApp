@@ -49,7 +49,6 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     props.navigation.addListener("focus", async () => {
-      console.log("disco");
       await getCases();
     });
 
@@ -80,9 +79,9 @@ const Dashboard = (props) => {
             type={item.requestType}
             name={item.name}
             description={item.description}
-            fullfilledAmount={item.fullfilledAmount}
-            requiredAmount={item.requiredAmount}
-            status={item.caseStatus}
+            amountRequired={item.amountRequired}
+            fulfilledAmount={item.fulfilledAmount}
+            commitedAmount={item.commitedAmount}
             buttonText="Donate"
             id={item.key}
             onClick={donate}
