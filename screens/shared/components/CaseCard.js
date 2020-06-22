@@ -87,8 +87,8 @@ const CaseCard = (props) => {
                 justifyContent: "space-between",
               }}
             >
-              <Paragraph style={{}}>Rs 50,000</Paragraph>
-              <Paragraph style={{}}>Rs 50,000</Paragraph>
+              <Paragraph style={{}}>Rs {props.amountRequired}</Paragraph>
+              <Paragraph style={{}}>Rs {props.commitedAmount}</Paragraph>
             </View>
             {/* <View style={{ flex: 1, alignItems: "flex-end" }}>
               <TouchableOpacity

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import Profile from "./Profile";
 import HelperApply from "../shared/HelperApply";
-import NewRequest from "./NewRequest";
 import AllCases from "../Donors/AllCases";
 import CaseDonate from "../Donors/CaseDonate";
+import CommitedDetails from "../Donors/CommitedDetails";
+
+import NewRequest from "./NewRequest";
+import Profile from "./Profile";
 import CaseDetail from "./CaseDetail";
 import TotalCases from "./TotalCases";
 import Settings from "./Settings";
-import { NavigationContainer } from "@react-navigation/native";
 import { GREEN } from "../../colors";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
@@ -54,6 +55,11 @@ const BottomNavigator = (props) => {
           name="Donate Case"
           options={{ title: "Donate to a Case" }}
           component={CaseDonate}
+        />
+        <DonorStack.Screen
+          name="Commitment Details"
+          options={{ title: "Donate to a Case" }}
+          component={CommitedDetails}
         />
       </DonorStack.Navigator>
     );

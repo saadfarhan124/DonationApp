@@ -43,6 +43,11 @@ const AllRequests = (props) => {
         "Request Details",
         requestList.find((c) => c.key === obj.id)
       );
+    } else {
+      props.navigation.navigate(
+        "Donation Request Details",
+        requestList.find((c) => c.key === obj.id)
+      );
     }
   };
   useEffect(() => {

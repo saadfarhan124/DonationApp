@@ -9,6 +9,8 @@ import Dashboardd from "./Dashboard";
 import AllRequests from "./AllRequests";
 import HelperRequestDetails from "./HelperRequestDetails";
 import CaseRequestDetails from "./CaseRequestDetails";
+import DonationRequestDetails from "./DonationRequestDetails";
+
 import Users from "./User";
 import Cases from "./Cases";
 
@@ -37,6 +39,11 @@ const AdminBottomNavigator = (props) => {
         <DashboardNav.Screen
           name="Case Request Details"
           component={CaseRequestDetails}
+          options={{ headerTitleAlign: "center" }}
+        />
+        <DashboardNav.Screen
+          name="Donation Request Details"
+          component={DonationRequestDetails}
           options={{ headerTitleAlign: "center" }}
         />
       </DashboardNav.Navigator>

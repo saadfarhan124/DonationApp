@@ -12,7 +12,7 @@ class Case {
   ) {
     this.name = name;
     this.description = description;
-    this.amountRequired = requiredAmount;
+    this.amountRequired = parseInt(requiredAmount);
     this.fulfilledAmount = 0;
     this.commitedAmount = 0;
     this.utilizedAmount = 0;

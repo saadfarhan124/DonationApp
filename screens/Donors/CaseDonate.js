@@ -59,13 +59,15 @@ const CaseDonate = (props) => {
       global.user.uid,
       { reminderDate, reminderMode }
     );
-    await Firebase.firestore()
+    const transRef = await Firebase.firestore()
       .collection("transaction")
       .add({ ...transaction });
+
     let requestData = {
-      transactionData: Object.assign({}, transaction),
+      transactionData: transRef.id,
       caseData: props.route.params,
     };
+
     let request = new Request(
       "Donation",
       "Pending",
@@ -78,7 +80,7 @@ const CaseDonate = (props) => {
 
     let notification = new Notifications(
       global.user.uid,
-      "Pending",
+      "unseen",
       `You made a commitment of ${donationAmount}
     to case ${props.route.params.name}`
     );
