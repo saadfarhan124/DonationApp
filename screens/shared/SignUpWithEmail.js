@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ToastAndroid } from "react-native";
 import { Button, Text, ActivityIndicator } from "react-native-paper";
-import { PINK, GREEN, GRAY } from "../../colors";
+import { GREEN } from "../../colors";
 import CustomTextInput from "./components/CustomTextInput";
 import Firebase from "../../Firebase";
 import User from "../../DataModels/User";
@@ -36,7 +36,6 @@ const SignUpWithEmail = () => {
       resetFields();
     } catch (error) {
       resetFields();
-      console.log(error);
     }
   };
 
@@ -47,9 +46,9 @@ const SignUpWithEmail = () => {
       password.length === 0 ||
       confirmPassword.length === 0
     ) {
-      console.log("Please fill in all the fields");
+      ToastAndroid.show("Please fill in all the fields", ToastAndroid.SHORT);
     } else if (password !== confirmPassword) {
-      console.log("Passwords do not match");
+      ToastAndroid.show("Passwords do not match", ToastAndroid.SHORT);
     } else {
       setLoaderVisible(true);
       try {
@@ -60,14 +59,13 @@ const SignUpWithEmail = () => {
         await user.updateProfile({ displayName: fullName });
         user.sendEmailVerification();
         addUserToDB(user);
-        // console.log(result);
       } catch (error) {
         if (error.code === "auth/email-already-in-use") {
           resetFields();
-          console.log("Email already exists");
+          ToastAndroid.show("Email already exists", ToastAndroid.SHORT);
         } else {
           resetFields();
-          console.log(error);
+          ToastAndroid.show(error.message, ToastAndroid.SHORT);
         }
       }
     }

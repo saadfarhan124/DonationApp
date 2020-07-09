@@ -144,7 +144,7 @@ const Dashboard = (props) => {
 
   const fullfilledDetails = (id) => {
     props.navigation.navigate(
-      "Commitment Details",
+      "Fullfiled Details",
       fulfilledCasesWithTransaction.find((c) => c.key === id)
     );
   };

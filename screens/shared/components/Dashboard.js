@@ -93,18 +93,14 @@ const Dashboard = (props) => {
                   <Image style={{ width: 45, height: 45 }} source={coinpile} />
                 </View>
                 <View style={{ marginLeft: 15 }}>
-                  <Title>25</Title>
+                  <Title>{props.totalCases}</Title>
                   <Paragraph>Open Cases</Paragraph>
-                  <Title>RS 40,000</Title>
+                  <Title>RS {props.totalFundsCollected}</Title>
                   <Paragraph>Funds</Paragraph>
                 </View>
 
                 <View style={{ marginLeft: 35, flexDirection: "row" }}>
                   <View style={{ justifyContent: "space-between" }}>
-                    <Image
-                      style={{ width: 35, height: 35 }}
-                      source={requestmini}
-                    />
                     <Image
                       style={{ width: 35, height: 35 }}
                       source={committed}
@@ -125,10 +121,15 @@ const Dashboard = (props) => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <Paragraph style={{}}>Rs 50,000</Paragraph>
-                    <Paragraph style={{}}>Rs 50,000</Paragraph>
-                    <Paragraph style={{}}>Rs 50,000</Paragraph>
-                    <Paragraph style={{}}>Rs 50,000</Paragraph>
+                    <Paragraph style={{}}>
+                      Rs {props.totalAmountCommitedCases}
+                    </Paragraph>
+                    <Paragraph style={{}}>
+                      Rs {props.totalAmountFullfilledCases}
+                    </Paragraph>
+                    <Paragraph style={{}}>
+                      Rs {props.totalAmountFullfilledCases}
+                    </Paragraph>
                   </View>
                 </View>
               </View>
@@ -145,9 +146,9 @@ const Dashboard = (props) => {
                   <Image style={{ width: 45, height: 45 }} source={committed} />
                 </View>
                 <View style={{ marginLeft: 15 }}>
-                  <Title>3</Title>
+                  <Title>{props.totalCasesDonatedTo}</Title>
                   <Paragraph>Open Cases</Paragraph>
-                  <Title>RS 25,000</Title>
+                  <Title>RS {props.totalAmountCommited}</Title>
                   <Paragraph>Commited</Paragraph>
                 </View>
 
@@ -157,10 +158,10 @@ const Dashboard = (props) => {
                       style={{ width: 35, height: 35 }}
                       source={requestmini}
                     />
-                    <Image
+                    {/* <Image
                       style={{ width: 35, height: 35 }}
                       source={fulfillmini}
-                    />
+                    /> */}
                     <Image
                       style={{ width: 35, height: 35 }}
                       source={Distributed}
@@ -173,9 +174,15 @@ const Dashboard = (props) => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <Paragraph style={{}}>Rs 50,000</Paragraph>
-                    <Paragraph style={{}}>Rs 50,000</Paragraph>
-                    <Paragraph style={{}}>Rs 50,000</Paragraph>
+                    <Paragraph style={{}}>
+                      Rs {props.totalAmountDonated}
+                    </Paragraph>
+                    {/* <Paragraph style={{}}>
+                      Rs {props.totalAmountCommited}
+                    </Paragraph> */}
+                    <Paragraph style={{}}>
+                      Rs {props.totalAmountFullfilled}
+                    </Paragraph>
                   </View>
                 </View>
 
@@ -209,9 +216,9 @@ const Dashboard = (props) => {
                   </Subheading>
                 </View>
                 <View style={{ marginLeft: 15 }}>
-                  <Subheading>{0}</Subheading>
-                  <Subheading>{1}</Subheading>
-                  <Subheading>{0}</Subheading>
+                  <Subheading>{props.totalCases}</Subheading>
+                  <Subheading>{props.totalHelper}</Subheading>
+                  <Subheading>{props.totalDonation}</Subheading>
                 </View>
               </View>
             </View>

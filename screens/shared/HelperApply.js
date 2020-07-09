@@ -235,10 +235,11 @@ const HelperApply = (props) => {
           </TouchableOpacity>
           <View
             style={{
-              flex: 1,
-              alignItems: "center",
-              marginVertical: 50,
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              backgroundColor: "rgba(255, 255, 255, 1)",
+              position: "absolute",
+              top: "30%",
+              borderColor: GREEN,
+              borderWidth: 2,
             }}
           >
             <CalendarPicker
@@ -408,7 +409,7 @@ const HelperApply = (props) => {
             color={GREEN}
             mode="outlined"
             // compact={true}
-            onPress={() => {}}
+
             style={{ width: 130 }}
             onPress={submitForm}
           >

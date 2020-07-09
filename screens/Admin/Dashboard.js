@@ -14,6 +14,36 @@ import { PINK, GREEN, GRAY } from "../../colors";
 import Dashboard from "../shared/components/Dashboard";
 import Firebase from "../../Firebase";
 const Dashboardd = (props) => {
+  const [totalDonation, setTotalDonation] = React.useState(0);
+  const [totalCases, setTotalCases] = React.useState(0);
+  const [totalHelper, setTotalHelper] = React.useState(0);
+  React.useEffect(() => {
+    async function getDetails() {
+      const documents = await Firebase.firestore()
+        .collection("requests")
+        .where("status", "==", "Pending")
+        .get();
+
+      let donationCount = 0,
+        helperCount = 0,
+        casesCount = 0;
+      documents.docs.forEach((item) => {
+        console.log(item.data().type);
+        if (item.data().type === "Donation") {
+          donationCount += 1;
+        } else if (item.data().type === "Helper Application") {
+          helperCount += 1;
+        } else if (item.data().type === "New Case Request") {
+          casesCount += 1;
+        }
+      });
+
+      setTotalCases(casesCount);
+      setTotalDonation(donationCount);
+      setTotalHelper(helperCount);
+    }
+    getDetails();
+  }, []);
   return (
     <View style={styles.container}>
       {/* <View style={styles.loader}>
@@ -59,6 +89,9 @@ const Dashboardd = (props) => {
           title="Admin Dashboard"
           type={null}
           navigation={props.navigation}
+          totalCases={totalCases}
+          totalDonation={totalDonation}
+          totalHelper={totalHelper}
         />
       </ScrollView>
     </View>

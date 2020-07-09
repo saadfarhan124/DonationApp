@@ -3,7 +3,9 @@ import HelperApply from "../shared/HelperApply";
 import AllCases from "../Donors/AllCases";
 import CaseDonate from "../Donors/CaseDonate";
 import CommitedDetails from "../Donors/CommitedDetails";
-
+import FullfilledCaseDetails from "../Donors/FullfilledCaseDetails";
+import HelperProfileDetails from "../Donors/HelperProfileDetails";
+import Notification from "../shared/Notifications";
 import NewRequest from "./NewRequest";
 import Profile from "./Profile";
 import CaseDetail from "./CaseDetail";
@@ -58,8 +60,18 @@ const BottomNavigator = (props) => {
         />
         <DonorStack.Screen
           name="Commitment Details"
-          options={{ title: "Donate to a Case" }}
+          options={{ title: "Commitment Details" }}
           component={CommitedDetails}
+        />
+        <DonorStack.Screen
+          name="Fullfiled Details"
+          options={{ title: "Fullfiled Details" }}
+          component={FullfilledCaseDetails}
+        />
+        <DonorStack.Screen
+          name="Helper Details"
+          options={{ title: "Helper Details" }}
+          component={HelperProfileDetails}
         />
       </DonorStack.Navigator>
     );
@@ -83,7 +95,7 @@ const BottomNavigator = (props) => {
         }}
       />
       <Tab.Screen
-        name="Requests"
+        name="Cases"
         component={DonorStackScreen}
         options={{
           // tabBarLabel: "Home",
@@ -94,12 +106,12 @@ const BottomNavigator = (props) => {
       />
 
       <Tab.Screen
-        name="Settings"
-        component={Settings}
+        name="Notification"
+        component={Notification}
         options={{
           // tabBarLabel: "Home",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="settings" color={color} size={26} />
+            <MaterialCommunityIcons name="bell" color={color} size={26} />
           ),
         }}
       />

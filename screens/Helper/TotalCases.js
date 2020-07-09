@@ -9,6 +9,7 @@ const TotalCases = (props) => {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const getCases = async () => {
     setLoaderVisible(true);
+    setCases([]);
     const documents = await Firebase.firestore()
       .collection("cases")
       .where("userId", "==", global.user.uid)
@@ -25,9 +26,11 @@ const TotalCases = (props) => {
   };
 
   useEffect(() => {
-    props.navigation.addListener("focus", async () => {
+    async function test() {
       await getCases();
-    });
+    }
+    test();
+    props.navigation.addListener("focus", async () => {});
   }, []);
 
   const detailScreen = (id) => {
@@ -52,8 +55,9 @@ const TotalCases = (props) => {
           <CaseCard
             name={item.name}
             description={item.description}
-            fullfilledAmount={item.fullfilledAmount}
-            requiredAmount={item.requiredAmount}
+            type={item.requestType}
+            commitedAmount={item.commitedAmount}
+            amountRequired={item.amountRequired}
             status={item.caseStatus}
             utilizedAmount={item.utilizedAmount}
             id={item.key}

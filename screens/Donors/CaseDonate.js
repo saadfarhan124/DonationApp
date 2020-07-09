@@ -19,9 +19,8 @@ import {
   Menu,
 } from "react-native-paper";
 import Firebase from "../../Firebase";
-import Donation from "../../DataModels/Donation";
 import CalendarPicker from "react-native-calendar-picker";
-import { GRAY, GREEN } from "../../colors";
+import { GREEN } from "../../colors";
 import CustomTextInput from "../shared/components/CustomTextInput";
 import Request from "../../DataModels/Request";
 import Transaction from "../../DataModels/Transaction";
@@ -81,8 +80,7 @@ const CaseDonate = (props) => {
     let notification = new Notifications(
       global.user.uid,
       "unseen",
-      `You made a commitment of ${donationAmount}
-    to case ${props.route.params.name}`
+      `You made a commitment of ${donationAmount} to case ${props.route.params.name}`
     );
     await Firebase.firestore()
       .collection("notification")
@@ -252,6 +250,8 @@ const CaseDonate = (props) => {
           <View>
             <Button
               color={GREEN}
+              style={{ borderRadius: 0, marginVertical: 10 }}
+              mode="contained"
               onPress={() => {
                 if (
                   donationAmount.length == 0 ||
@@ -267,7 +267,19 @@ const CaseDonate = (props) => {
                 }
               }}
             >
-              <Text>Donate</Text>
+              <Text style={{ color: "white" }}>Donate</Text>
+            </Button>
+            <Button
+              style={{ borderRadius: 0, marginVertical: 10 }}
+              color={GREEN}
+              onPress={() => {
+                props.navigation.navigate(
+                  "Helper Details",
+                  props.route.params.userId
+                );
+              }}
+            >
+              View Helper Profile
             </Button>
           </View>
         </View>

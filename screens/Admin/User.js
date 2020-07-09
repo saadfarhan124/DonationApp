@@ -103,6 +103,7 @@ const Users = (props) => {
           <UserCard
             username={item.name}
             email={item.email}
+            image={item.photoUri}
             id={item.key}
             isActiveHelper={item.isActiveHelper}
             isTrustedHelper={item.isTrustedHelper}

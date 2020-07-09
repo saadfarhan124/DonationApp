@@ -65,9 +65,7 @@ const HelperRequestDetails = (props) => {
   };
 
   const [loaderVisible, setLoaderVisible] = useState(false);
-  useEffect(() => {
-    console.log(props.route.params);
-  }, []);
+  useEffect(() => {}, []);
   return (
     <ScrollView style={styles.container}>
       <View style={styles.loader}>

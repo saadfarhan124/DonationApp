@@ -16,7 +16,7 @@ const LeftContent = (props) => (
     style={{ alignSelf: "baseline" }}
     size={55}
     source={{
-      uri: global.user.photoURL,
+      uri: props.image,
     }}
   />
 );

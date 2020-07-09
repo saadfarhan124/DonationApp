@@ -24,58 +24,107 @@ import Firebase from "../../Firebase";
 import Dashboard from "../shared/components/Dashboard";
 
 const Profile = (props) => {
+  //donor fields
+  const [totalCasesDonatedTo, setTotalCasesDonatedTo] = useState(0);
+  const [totalAmountCommited, setTotalAmountCommited] = useState(0);
+  const [totalAmountDonated, setTotalAmountDonated] = useState(0);
+  const [totalAmountFullfilled, setTotalAmountFullfilled] = useState(0);
+
+  //helperFields
+  const [totalCases, setTotalCases] = useState(0);
+  const [totalFundsCollected, setTotalFundsCollected] = useState(0);
+  const [totalAmountCommitedCases, setTotalAmountCommitedCases] = useState(0);
+  const [totalAmountFullfilledCases, setTotalAmountFullfilledCases] = useState(
+    0
+  );
+
   const updateDashboard = async () => {
     setLoaderVisible(true);
+    //helpers
+    if (global.userFirebase.data().isActiveHelper) {
+      let totalCasesVar = 0;
+      let casesId = [];
+      let totalFunds = 0;
+      let totalAmountCommitedCasesVar = 0;
+      let totalAmountFullfilledCasesVar = 0;
+      const casesDoc = await Firebase.firestore()
+        .collection("cases")
+        .where("userId", "==", global.user.uid)
+        .get();
 
-    // Total Cases
-    const total = await Firebase.firestore()
-      .collection("cases")
-      .where("userId", "==", global.user.uid)
+      casesDoc.forEach((item) => {
+        casesId.push(item.id);
+      });
+
+      await Promise.all(
+        casesId.map(async (item) => {
+          let caseById = await Firebase.firestore()
+            .collection("transaction")
+            .where("caseId", "==", item)
+            .get();
+          caseById.forEach((item) => {
+            if (item.data().status == "fulfilled") {
+              totalAmountFullfilledCasesVar += parseInt(item.data().amount);
+              totalFunds += parseInt(item.data().amount);
+            } else if (item.data().status == "commited") {
+              totalAmountCommitedCasesVar += parseInt(item.data().amount);
+              totalFunds += parseInt(item.data().amount);
+            }
+          });
+        })
+      );
+      setTotalCases(casesDoc.size);
+      setTotalAmountCommitedCases(totalAmountCommitedCasesVar);
+      setTotalAmountFullfilledCases(totalAmountFullfilledCasesVar);
+      setTotalFundsCollected(totalFunds);
+    }
+
+    //donors
+    const transDocs = await Firebase.firestore()
+      .collection("transaction")
+      .where("donorId", "==", global.user.uid)
+      .where("status", "in", ["fulfilled", "commited"])
       .get();
-    setTotalCases(total.size);
+    let totalAmountCommitedVar = 0;
+    let totalAmountDonatedVar = 0;
+    let totalAmountFullfilleddVar = 0;
 
-    //InActive Cases
-    const inactive = await Firebase.firestore()
-      .collection("cases")
-      .where("userId", "==", global.user.uid)
-      .where("caseStatus", "==", "inactive")
-      .get();
+    transDocs.forEach((doc) => {
+      if (doc.data().status == "commited") {
+        totalAmountCommitedVar += parseInt(doc.data().amount);
+      }
+      if (doc.data().status != "rejected") {
+        totalAmountDonatedVar += parseInt(doc.data().amount);
+      }
+      if (doc.data().status == "fulfilled") {
+        totalAmountFullfilleddVar += parseInt(doc.data().amount);
+      }
+    });
 
-    //Total Donation
-    const userObj = await Firebase.firestore()
-      .collection("users")
-      .doc(global.user.uid)
-      .get();
+    setTotalCasesDonatedTo(transDocs.size);
+    setTotalAmountCommited(totalAmountCommitedVar);
+    setTotalAmountDonated(totalAmountDonatedVar);
+    setTotalAmountFullfilled(totalAmountFullfilleddVar);
 
-    //Total Cases Donated To
-    const totalCasesDonated = await Firebase.firestore()
-      .collection("donations")
-      .where("userId", "==", global.user.uid)
-      .get();
-    setTotalCasesDonatedTo(totalCasesDonated.size);
-
-    setTotalDonationMade(userObj.data().amountDonated);
-    setTotalInactiveCases(inactive.size);
-    setTotalActiveCases(total.size - inactive.size);
     setLoaderVisible(false);
   };
   useEffect(() => {
-    async function anyNameFunction() {
-      const documents = await Firebase.firestore()
-        .collection("notification")
-        .where("uid", "==", global.user.uid)
-        .where("status", "==", "unseen")
-        .get();
-      if (documents.size > 0) {
-        documents.forEach((document) => {
-          setTimeout(async () => {
-            ToastAndroid.show(document.data().message, ToastAndroid.SHORT);
-            await document.ref.update({ status: "seen" });
-          }, 1000);
-        });
-      }
-    }
-    anyNameFunction();
+    // async function anyNameFunction() {
+    //   const documents = await Firebase.firestore()
+    //     .collection("notification")
+    //     .where("uid", "==", global.user.uid)
+    //     .where("status", "==", "unseen")
+    //     .get();
+    //   if (documents.size > 0) {
+    //     documents.forEach((document) => {
+    //       setTimeout(async () => {
+    //         ToastAndroid.show(document.data().message, ToastAndroid.SHORT);
+    //         await document.ref.update({ status: "seen" });
+    //       }, 1000);
+    //     });
+    //   }
+    // }
+    // anyNameFunction();
 
     props.navigation.addListener("focus", async () => {
       await updateDashboard();
@@ -83,29 +132,25 @@ const Profile = (props) => {
 
     return () => {
       setDialogState(false);
-      setTotalCases(0);
-      setTotalInactiveCases(0);
-      setTotalActiveCases(0);
-      setLoaderVisible(false);
-      setTotalDonationMade(0);
       setTotalCasesDonatedTo(0);
+      setTotalAmountCommited(0);
+      setTotalAmountDonated(0);
+      setTotalAmountFullfilled(0);
+      setTotalCases(0);
+      setTotalFundsCollected(0);
+      setTotalAmountCommitedCases(0);
+      setTotalAmountFullfilledCases(0);
+      setLoaderVisible(false);
     };
   }, []);
-
-  // useFocusEffect(console.log(props.navigation));
 
   const [dialogState, setDialogState] = useState(false);
 
   // Dashboard Details
-  const [totalCases, setTotalCases] = useState(0);
-  const [totalInactiveCases, setTotalInactiveCases] = useState(0);
-  const [totalActiveCases, setTotalActiveCases] = useState(0);
 
   const [loaderVisible, setLoaderVisible] = useState(false);
 
   // Donation Details
-  const [totalDonationMade, setTotalDonationMade] = useState(0);
-  const [totalCasesDonatedTo, setTotalCasesDonatedTo] = useState(0);
 
   const logout = () => {
     Firebase.auth().signOut();
@@ -216,16 +261,19 @@ const Profile = (props) => {
             navigation={props.navigation}
             type="case"
             totalCases={totalCases}
-            totalActiveCases={totalActiveCases}
-            totalInactiveCases={totalInactiveCases}
+            totalFundsCollected={totalFundsCollected}
+            totalAmountCommitedCases={totalAmountCommitedCases}
+            totalAmountFullfilledCases={totalAmountFullfilledCases}
           />
         )}
         <Dashboard
           title="Donation"
           navigation={props.navigation}
           type="donation"
-          totalDonationMade={totalDonationMade}
           totalCasesDonatedTo={totalCasesDonatedTo}
+          totalAmountCommited={totalAmountCommited}
+          totalAmountDonated={totalAmountDonated}
+          totalAmountFullfilled={totalAmountFullfilled}
         />
       </ScrollView>
     </View>
