@@ -14,7 +14,13 @@
 
     "android": {
       "package": "com.xortox.madad",
-      "versionCode": 1
+      "versionCode": 1,
+      "config": {
+        "googleSignIn": {
+          "apiKey": "AIzaSyBkc6kKMNp8fe6uOSiQZDb2XrTDDUikEiE",
+          "certificateHash": "A0F612C4D7332A31083C2D459971956627C84795"
+        }
+      }
     }
   }
 }

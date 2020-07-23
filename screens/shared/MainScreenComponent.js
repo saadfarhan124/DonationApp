@@ -69,7 +69,10 @@ const MainScreen = (props) => {
       const { type, accessToken, idToken, user } = await Google.logInAsync({
         androidClientId:
           "1034258162280-ln5s8s9925bpunte30cpm80rmkpdk11q.apps.googleusercontent.com",
+        androidStandaloneAppClientId:
+          "1034258162280-ln5s8s9925bpunte30cpm80rmkpdk11q.apps.googleusercontent.com",
         scopes: ["profile", "email"],
+        behavior: "web",
       });
 
       if (type === "success") {

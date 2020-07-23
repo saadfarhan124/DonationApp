@@ -109,37 +109,20 @@ const Profile = (props) => {
     setLoaderVisible(false);
   };
   useEffect(() => {
-    // async function anyNameFunction() {
-    //   const documents = await Firebase.firestore()
-    //     .collection("notification")
-    //     .where("uid", "==", global.user.uid)
-    //     .where("status", "==", "unseen")
-    //     .get();
-    //   if (documents.size > 0) {
-    //     documents.forEach((document) => {
-    //       setTimeout(async () => {
-    //         ToastAndroid.show(document.data().message, ToastAndroid.SHORT);
-    //         await document.ref.update({ status: "seen" });
-    //       }, 1000);
-    //     });
-    //   }
-    // }
-    // anyNameFunction();
-
     props.navigation.addListener("focus", async () => {
       await updateDashboard();
     });
 
     return () => {
       setDialogState(false);
-      setTotalCasesDonatedTo(0);
-      setTotalAmountCommited(0);
-      setTotalAmountDonated(0);
-      setTotalAmountFullfilled(0);
-      setTotalCases(0);
-      setTotalFundsCollected(0);
-      setTotalAmountCommitedCases(0);
-      setTotalAmountFullfilledCases(0);
+      setTotalCasesDonatedTo(totalCasesDonatedTo);
+      setTotalAmountCommited(totalAmountCommited);
+      setTotalAmountDonated(totalAmountDonated);
+      setTotalAmountFullfilled(totalAmountFullfilled);
+      setTotalCases(totalCases);
+      setTotalFundsCollected(totalFundsCollected);
+      setTotalAmountCommitedCases(totalAmountCommitedCases);
+      setTotalAmountFullfilledCases(totalAmountFullfilledCases);
       setLoaderVisible(false);
     };
   }, []);

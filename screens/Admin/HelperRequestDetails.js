@@ -33,7 +33,7 @@ const HelperRequestDetails = (props) => {
           new Notifications(
             props.route.params.uid,
             "unseen",
-            "Your request was Accepted"
+            "Your request to be a Helper has been accepted. You can now create cases"
           )
         )
       );
@@ -55,7 +55,7 @@ const HelperRequestDetails = (props) => {
           new Notifications(
             props.route.params.uid,
             "unseen",
-            "Your request was Rejected"
+            "Your request to be an active helper was rejected"
           )
         )
       );

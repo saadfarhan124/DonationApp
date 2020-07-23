@@ -55,7 +55,7 @@ const CaseRequestDetails = (props) => {
           new Notifications(
             props.route.params.uid,
             "unseen",
-            "Your request was Accepted"
+            `Your request for case title '${props.route.params.data.requestName}' was accepted`
           )
         )
       );
@@ -77,7 +77,7 @@ const CaseRequestDetails = (props) => {
           new Notifications(
             props.route.params.uid,
             "unseen",
-            "Your request was Rejected"
+            `Your request for case title '${props.route.params.data.requestName}' was rejected`
           )
         )
       );

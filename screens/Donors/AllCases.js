@@ -179,7 +179,9 @@ const Dashboard = (props) => {
             await getActiveCases();
           }}
         >
-          Active
+          <Text style={{ color: activeTab == "Active" ? "#ffffff" : GREEN }}>
+            Active
+          </Text>
         </Button>
         <Button
           color={GREEN}
@@ -190,7 +192,9 @@ const Dashboard = (props) => {
             await getCommitedCases();
           }}
         >
-          Commited
+          <Text style={{ color: activeTab == "Commited" ? "#ffffff" : GREEN }}>
+            Commited
+          </Text>
         </Button>
         <Button
           color={GREEN}
@@ -201,7 +205,9 @@ const Dashboard = (props) => {
             getFulfilledCases();
           }}
         >
-          Fulfilled
+          <Text style={{ color: activeTab == "Fulfilled" ? "#ffffff" : GREEN }}>
+            Fulfilled
+          </Text>
         </Button>
       </View>
       {noCasesText && (

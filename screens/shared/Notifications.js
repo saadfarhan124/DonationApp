@@ -55,7 +55,7 @@ const Notification = (props) => {
         <FlatList
           data={notification}
           renderItem={({ item }) => (
-            <View style={{ width: "100%", margin: 10 }}>
+            <View style={{ width: "100%", marginVertical: 10 }}>
               {item.status === "unseen" ? (
                 <Text style={{ fontWeight: "bold", paddingHorizontal: 10 }}>
                   {item.message.split("\n").join("")}
